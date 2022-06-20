@@ -1,4 +1,5 @@
-﻿using SSH.TrussSolver;
+﻿using MathNet.Numerics.LinearAlgebra;
+using SSH.TrussSolver;
 using System.Collections.Generic;
 
 namespace SSH
@@ -22,23 +23,23 @@ namespace SSH
                 node2,
                 node3
             };
-
-            TrussElement element1 = new TrussElement(0, 0, 3, 0, 1, 2, 1, 1);
-            TrussElement element2 = new TrussElement(3, 0, 0, 4, 2, 3, 1, 1);
-
-            List<int> restrainedNodes = new List<int> { 1, 2 };
-
+            List<RestrainedNodes> restrainedNodes = new List<RestrainedNodes> {
+                new RestrainedNodes(1,eRestrainedDir.XYDirection),
+                new RestrainedNodes(3,eRestrainedDir.XYDirection),
+                };
+            
             PointLoad Load = new PointLoad(2, 0, -150000);
 
             List<TrussElement> StiffnessList = new List<TrussElement>();
-            var stifnessMatrix = new TrussElement(1, 3, 1, 0, 1, 3,1,1);
-            StiffnessList.Add(stifnessMatrix);
-            var stifnessMatrix1 = new TrussElement(1, 5, 1, 126.9, 2, 3,1,1);
-            StiffnessList.Add(stifnessMatrix1);
+            TrussElement element1 = new TrussElement(0, 0, 3, 0, 1, 2, 1, 1);
+            StiffnessList.Add(element1);
+            TrussElement element2 = new TrussElement(3, 0, 0, 4, 2, 3, 1, 1);
+            StiffnessList.Add(element2);
 
-            Assembler assembler = new Assembler(StiffnessList, 3);
+            Assembler assembler = new Assembler(StiffnessList, 3, restrainedNodes);
 
-            assembler.getAssembleMatrix(StiffnessList);
+            Matrix<double> KG =assembler.getAssembleMatrix(StiffnessList);
+            Matrix<double> KGReduced = assembler.getAssembledReducedMatrix(StiffnessList,);
         }
     }
 }

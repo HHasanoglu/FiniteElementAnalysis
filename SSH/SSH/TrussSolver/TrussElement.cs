@@ -9,7 +9,7 @@ namespace SSH.TrussSolver
     {
         #region Ctor
 
-        public TrussElement(double startNodeXcoord, double startNodeYcoord, double endNodeXcoord, double endNodeYcoord, double startNodeID, double endNodeID, double E, double A)
+        public TrussElement(double startNodeXcoord, double startNodeYcoord, double endNodeXcoord, double endNodeYcoord, int startNodeID, int endNodeID, double E, double A)
         {
             _startNodeXcoord = startNodeXcoord;
             _startNodeYcoord = startNodeYcoord;
@@ -17,7 +17,11 @@ namespace SSH.TrussSolver
             _endNodeYcoord = endNodeYcoord;
             _startNodeID = startNodeID;
             _endNodeID = endNodeID;
+            _E = E;
+            _A = A;
             EvaluateProperties();
+            evaluateTransformationMatrix();
+            EvaluateLocalAndGlobalStiffnessMatrix();
         }
 
         #endregion
@@ -28,16 +32,16 @@ namespace SSH.TrussSolver
         private double _startNodeYcoord;
         private double _endNodeXcoord;
         private double _endNodeYcoord;
-        private double _startNodeID;
-        private double _endNodeID;
+        private int _startNodeID;
+        private int _endNodeID;
         private double _A;
         private double _E;
         private double _L;
         private double _theta;
         private double _K;
         private Matrix<double> _T;
-        private Matrix<double> _MLocal;
-        private Matrix<double> _MGlobal;
+        private Matrix<double> _kl;
+        private Matrix<double> _kg;
 
         //public TrussElement(double startNodeXcoord, double startNodeYcoord, double endNodeXcoord, double endNodeYcoord, double startNodeID, double endNodeID, double E, double A)
         //{
@@ -63,10 +67,10 @@ namespace SSH.TrussSolver
         public double StartNodeYcoord { get => _startNodeYcoord; set => _startNodeYcoord = value; }
         public double EndNodeXcoord { get => _endNodeXcoord; set => _endNodeXcoord = value; }
         public double EndNodeYcoord { get => _endNodeYcoord; set => _endNodeYcoord = value; }
-        public double StartNodeID { get => _startNodeID; set => _startNodeID = value; }
-        public double EndNodeID { get => _endNodeID; set => _endNodeID = value; }
-        public Matrix<double> MLocal { get => _MLocal; set => _MLocal = value; }
-        public Matrix<double> MGlobal { get => (_T.Transpose() * _MLocal) * _T; }
+        public int  StartNodeID { get => _startNodeID; set => _startNodeID = value; }
+        public int EndNodeID { get => _endNodeID; set => _endNodeID = value; }
+        public Matrix<double> kl { get => _kl; set => _kl = value; }
+        public Matrix<double> Kg { get => _kg; set => _kg = value; }
 
         #endregion
 
@@ -75,7 +79,7 @@ namespace SSH.TrussSolver
         private void EvaluateProperties()
         {
             _L = Math.Sqrt(Math.Pow(_endNodeXcoord - _startNodeXcoord, 2) + Math.Pow(_endNodeYcoord - _startNodeYcoord, 2));
-            _theta = 180 / Math.PI * Math.Atan2((_endNodeYcoord - _startNodeYcoord), (_endNodeXcoord - _startNodeXcoord));
+            _theta = Math.Atan2((_endNodeYcoord - _startNodeYcoord), (_endNodeXcoord - _startNodeXcoord));
         }
 
         private void evaluateTransformationMatrix()
@@ -95,13 +99,13 @@ namespace SSH.TrussSolver
         private void EvaluateLocalAndGlobalStiffnessMatrix()
         {
             _K = _E * _A / _L;
-            _MLocal = Matrix<double>.Build.Dense(2, 2);
-            _MLocal[0, 0] = _K;
-            _MLocal[0, 1] = -_K;
-            _MLocal[1, 0] = -_K;
-            _MLocal[1, 1] = _K;
+            _kl = Matrix<double>.Build.Dense(2, 2);
+            _kl[0, 0] = _K;
+            _kl[0, 1] = -_K;
+            _kl[1, 0] = -_K;
+            _kl[1, 1] = _K;
 
-            _MGlobal = (_T.Transpose() * _MLocal) * _T;
+            _kg = (_T.Transpose() * _kl) * _T;
         }
 
         #endregion
