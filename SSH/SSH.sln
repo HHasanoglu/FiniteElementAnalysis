@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.32510.428
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SSH", "SSH\SSH.csproj", "{8D982526-F1C1-4193-A632-852CBB677C63}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StructuralProject", "..\StructuralProject\StructuralProject.csproj", "{89867605-5A98-4AAE-8049-0C0A42725F55}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8D982526-F1C1-4193-A632-852CBB677C63}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D982526-F1C1-4193-A632-852CBB677C63}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D982526-F1C1-4193-A632-852CBB677C63}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D982526-F1C1-4193-A632-852CBB677C63}.Release|Any CPU.Build.0 = Release|Any CPU
+		{89867605-5A98-4AAE-8049-0C0A42725F55}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{89867605-5A98-4AAE-8049-0C0A42725F55}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{89867605-5A98-4AAE-8049-0C0A42725F55}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{89867605-5A98-4AAE-8049-0C0A42725F55}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E33FCE42-F7EC-455F-8FF0-8C0BD4BAC8B5}
+	EndGlobalSection
+EndGlobal
