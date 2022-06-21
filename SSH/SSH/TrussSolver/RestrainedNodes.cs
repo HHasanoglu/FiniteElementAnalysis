@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SSH.TrussSolver
 {
-    class RestrainedNodes
+    public class RestrainedNodes
     {
         private int _nodeID;
         private eRestrainedDir _direction;

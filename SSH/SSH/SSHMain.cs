@@ -36,10 +36,10 @@ namespace SSH
             TrussElement element2 = new TrussElement(3, 0, 0, 4, 2, 3, 1, 1);
             StiffnessList.Add(element2);
 
-            Assembler assembler = new Assembler(StiffnessList, 3, restrainedNodes);
+            Assembler assembler = new Assembler(StiffnessList,  restrainedNodes,3);
 
             Matrix<double> KG =assembler.getAssembleMatrix(StiffnessList);
-            Matrix<double> KGReduced = assembler.getAssembledReducedMatrix(StiffnessList,);
+            Matrix<double> KGReduced = assembler.getAssembledReducedMatrix(StiffnessList);
         }
     }
 }
