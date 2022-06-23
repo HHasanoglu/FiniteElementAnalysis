@@ -32,6 +32,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Accessibility" />
+    <Reference Include="devDept.Eyeshot.Control.Win.v2022, Version=2022.2.436.0, Culture=neutral, PublicKeyToken=5385d83d2fb4d7d9, processorArchitecture=MSIL" />
+    <Reference Include="devDept.Geometry.v2022, Version=2022.2.436.0, Culture=neutral, PublicKeyToken=9440825e8b4733bc" />
+    <Reference Include="devDept.Graphics.Shaders.v2022, Version=2022.2.436.0, Culture=neutral, PublicKeyToken=54ce5f5f803e4b42" />
+    <Reference Include="devDept.Graphics.Win.v2022, Version=2022.2.436.0, Culture=neutral, PublicKeyToken=f3cd437f0d8061b5" />
     <Reference Include="DevExpress.BonusSkins.v19.2" />
     <Reference Include="DevExpress.Data.v19.2" />
     <Reference Include="DevExpress.Printing.v19.2.Core" />
@@ -43,7 +48,9 @@
       <HintPath>..\packages\MathNet.Numerics.5.0.0\lib\net48\MathNet.Numerics.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.IO.Compression" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -63,6 +70,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TrussSolver\Assembler.cs" />
+    <Compile Include="TrussSolver\Load.cs" />
     <Compile Include="TrussSolver\NodesInfo.cs" />
     <Compile Include="TrussSolver\PointLoad.cs" />
     <Compile Include="TrussSolver\RestrainedAxis.cs" />
