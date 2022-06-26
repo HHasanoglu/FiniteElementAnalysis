@@ -11,6 +11,12 @@ namespace SSH.TrussSolver
         private double _xComponent;
         private double _yComponent;
 
+        public Load(double xComponent, double yComponent)
+        {
+            _xComponent = xComponent;
+            _yComponent = yComponent;
+        }
+
         //public Load(double xComponent, double yComponent)
         //{
         //    _xComponent = xComponent;

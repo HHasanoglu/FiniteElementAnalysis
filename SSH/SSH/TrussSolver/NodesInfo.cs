@@ -21,7 +21,6 @@ namespace SSH.TrussSolver
         private double _xcoord;
         private double _ycoord;
         private double _NodeID;
-        private Load _Load;
 
         #endregion
 
@@ -30,7 +29,6 @@ namespace SSH.TrussSolver
         public double Xcoord { get => _xcoord; set => _xcoord = value; }
         public double Ycoord { get => _ycoord; set => _ycoord = value; }
         public double NodeID { get => _NodeID; set => _NodeID = value; }
-        public Load load =new Load();
 
         #endregion
     }

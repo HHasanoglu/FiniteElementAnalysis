@@ -34,8 +34,9 @@ namespace SSH
                 new RestrainedNodes(1,eRestrainedDir.XYDirection),
                 new RestrainedNodes(3,eRestrainedDir.XYDirection),
                 };
+
             List<PointLoad> loadList = new List<PointLoad>();
-            PointLoad Load = new PointLoad(2, new Load(0, -20000));
+            PointLoad Load = new PointLoad(2, new Load(0, -150000));
             loadList.Add(Load);
 
             List<TrussElement> trussMemberList = new List<TrussElement>();
@@ -44,17 +45,9 @@ namespace SSH
             TrussElement element2 = new TrussElement(3, 0, 0, 4, 2, 3, 1, 1);
             trussMemberList.Add(element2);
 
-            Assembler assembler = new Assembler(trussMemberList,  restrainedNodes,3);
+            Assembler assembler = new Assembler(trussMemberList, loadList,restrainedNodes, listOfNodes.Count);
 
-            Matrix<double> KG =assembler.getAssembleMatrix(trussMemberList);
-            Matrix<double> KGReduced = assembler.getAssembledReducedMatrix(trussMemberList);
-            var totalNodes = listOfNodes.Count * 2;
-            var force = Matrix<double>.Build.Dense(totalNodes, 1);
-            foreach (var node in listOfNodes)
-            {
-                node.load.XComponent = 0;
-                node.load.YComponent = 0;
-            }
+
 
 
         }

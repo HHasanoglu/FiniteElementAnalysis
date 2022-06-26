@@ -13,14 +13,14 @@ namespace SSH.TrussSolver
         //    _TotalNodes = TotalNodes;
         //    _restrainedNodes = restrainedNodes;
         //}
-            //_Ndof = _TotalNodes * _dofPerNode;
-            //evaluateTotalRestrainedNodes();
+        //_Ndof = _TotalNodes * _dofPerNode;
+        //evaluateTotalRestrainedNodes();
 
         private void evaluateTotalRestrainedNodes()
         {
             foreach (var node in _restrainedNodes)
             {
-                if (node.Direction==eRestrainedDir.XYDirection)
+                if (node.Direction == eRestrainedDir.XYDirection)
                 {
                     _nResTotal += 2;
                 }
@@ -32,27 +32,47 @@ namespace SSH.TrussSolver
             }
         }
 
-        private const int _dofPerNode=2;
+        private const int _dofPerNode = 2;
         private List<TrussElement> _StiffnessList;
+        private List<PointLoad> _loadList;
         private int _TotalNodes;
         private List<RestrainedNodes> _restrainedNodes;
-        private int _nResTotal=0;
+        private int _nResTotal = 0;
         private int _Ndof;
+        private Matrix<double> _KG;
+        private Matrix<double> _KGReduced;
+        private Matrix<double> _force;
+        private Matrix<double> _forceReduced;
+        private Matrix<double> _displacements;
+        private Matrix<double> _displacementsTotal;
+        private Matrix<double> _reactions;
 
-        public Assembler(List<TrussElement> stiffnessList, List<RestrainedNodes> restrainedNodes, int totalNodes)
+        public Assembler(List<TrussElement> stiffnessList, List<PointLoad> loadList, List<RestrainedNodes> restrainedNodes, int totalNodes)
         {
             _StiffnessList = stiffnessList;
+            _loadList = loadList;
             _TotalNodes = totalNodes;
             _restrainedNodes = restrainedNodes;
             _Ndof = _TotalNodes * _dofPerNode;
             evaluateTotalRestrainedNodes();
+            getAssembleMatrix();
+            getAssembledReducedMatrix();
+            GetReducedForceVector();
+            GetDisplacementVector();
+            GetTotalDisplacement();
+            GetReactions();
         }
 
-        public Matrix<double> getAssembleMatrix(List<TrussElement> memberList)
+        private void GetReactions()
         {
-            var KG = Matrix<double>.Build.Dense(_Ndof, _Ndof);
+            _reactions= _KG * _displacementsTotal;
+        }
+
+        private void getAssembleMatrix()
+        {
+            _KG = Matrix<double>.Build.Dense(_Ndof, _Ndof);
             //var sorted = StiffnessMatrixList.Ordw(x => x.StartNode);
-            foreach (TrussElement element in memberList)
+            foreach (TrussElement element in _StiffnessList)
             {
                 Matrix<double> Kg = element.Kg;
                 var st1 = 2 * element.StartNodeID - 2;
@@ -62,39 +82,103 @@ namespace SSH.TrussSolver
                 var s = 0;
                 for (int i = st1; i <= end2; i++)
                 {
-                    var en = 0; 
-                    for (int j = st1; j <=end2; j++)
-                    { 
-                      KG[i, j] = KG[i, j] + Kg[s, en];
+                    var en = 0;
+                    for (int j = st1; j <= end2; j++)
+                    {
+                        _KG[i, j] = _KG[i, j] + Kg[s, en];
                         en += 1;
                     }
-                    s +=1;
+                    s += 1;
                 }
             }
-            return KG;
         }
 
-        public Matrix<double> getAssembledReducedMatrix(List<TrussElement> memberList)
+        private void getAssembledReducedMatrix()
         {
-            int[,] arr2d = new int[_TotalNodes, _dofPerNode];
+            int[,] arr2d;
+            int count;
+            GetMappingArray(out arr2d, out count);
+
+            int[] G = new int[2 * _dofPerNode];
+
+            _KG = Matrix<double>.Build.Dense(count, count);
+            foreach (TrussElement element in _StiffnessList)
+            {
+                for (int i = 0; i < _dofPerNode; i++)
+                {
+                    G[i] = arr2d[element.StartNodeID - 1, i];
+                    G[i + 2] = arr2d[element.EndNodeID - 1, i];
+                }
+
+                Matrix<double> Kg = element.Kg;
+                for (int i = 0; i < 4; i++)
+                {
+                    for (int j = 0; j < 4; j++)
+                    {
+                        var P = G[i];
+                        var Q = G[j];
+                        if (P != -1 && Q != -1)
+                        {
+                            _KG[P, Q] = _KG[P, Q] + Kg[i, j];
+                        }
+                    }
+                }
+            }
+        }
+
+
+        private void GetReducedForceVector()
+        {
+            int[,] arr2d;
+            int count;
+            GetMappingArray(out arr2d, out count);
+
+            _force = Matrix<double>.Build.Dense(count, 1);
+
+            foreach (PointLoad load in _loadList)
+            {
+                for (int i = 0; i < 2; i++)
+                {
+                    var Q = arr2d[load.NodeID - 1, i];
+                    if (Q != -1)
+                    {
+                        switch (i)
+                        {
+                            case 0:
+
+                                _force[Q, 0] = load.Load.XComponent;
+                                break;
+                            case 1:
+
+                                _force[Q, 0] = load.Load.YComponent;
+                                break;
+                        }
+                    }
+                }
+            }
+        }
+
+        private void GetMappingArray(out int[,] arr2d, out int count)
+        {
+            arr2d = new int[_TotalNodes, _dofPerNode];
             foreach (var node in _restrainedNodes)
             {
                 var rowID = node.NodeID;
                 if (node.Direction == eRestrainedDir.XDirection)
                 {
-                    arr2d[rowID-1, 0] = -1;
+                    arr2d[rowID - 1, 0] = -1;
                 }
                 else if (node.Direction == eRestrainedDir.YDirection)
                 {
-                    arr2d[rowID-1, 1] = -1;
+                    arr2d[rowID - 1, 1] = -1;
                 }
-                else if (node.Direction==eRestrainedDir.XYDirection)
+                else if (node.Direction == eRestrainedDir.XYDirection)
                 {
-                    arr2d[rowID-1, 0] = -1;
-                    arr2d[rowID-1, 1] = -1;
+                    arr2d[rowID - 1, 0] = -1;
+                    arr2d[rowID - 1, 1] = -1;
                 }
             }
-            int count = 0;
+            count = 0;
             for (int i = 0; i < _TotalNodes; i++)
             {
                 for (int j = 0; j < _dofPerNode; j++)
@@ -108,33 +192,39 @@ namespace SSH.TrussSolver
                 }
 
             }
+        }
+        private void  GetDisplacementVector()
+        {
 
-            int[] G = new int[2* _dofPerNode];
+            _displacements = _KGReduced.Inverse() * _forceReduced;
+        }
 
-            var KG = Matrix<double>.Build.Dense(count, count);
-            foreach (TrussElement element in memberList)
+        private void GetTotalDisplacement()
+        {
+            int[,] arr2d;
+            int count;
+            GetMappingArray(out arr2d, out count);
+
+            _displacementsTotal = Matrix<double>.Build.Dense(_Ndof, 1);
+
+            for (int j = 0; j < _TotalNodes; j++)
             {
-                for (int i = 0; i < _dofPerNode; i++)
+                for (int i = 0; i < 2; i++)
                 {
-                    G[i] = arr2d[element.StartNodeID - 1, i];
-                    G[i+2] = arr2d[element.EndNodeID - 1, i];
-                }
-
-                Matrix<double> Kg = element.Kg;
-                for (int i = 0; i < 4; i++)
-                {
-                    for (int j = 0; j < 4; j++)
+                    var Q = arr2d[j, i];
+                    if (Q != -1)
                     {
-                        var P = G[i];
-                        var Q = G[j];
-                        if (P!=-1 && Q!=-1)
-                        {
-                            KG[P, Q] = KG[P, Q] + Kg[i,j];
-                        }
+                        _displacementsTotal[2*j+i, 0] = _displacements[Q, 0];
                     }
                 }
             }
-            return KG;
+
         }
+
+
+
+
+
+
     }
 }
