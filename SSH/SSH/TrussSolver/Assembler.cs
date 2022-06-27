@@ -75,6 +75,13 @@ namespace SSH.TrussSolver
                 Displacement[1,0]=_displacementsTotal[2 * element.StartNodeID - 1, 0];
                 Displacement[2, 0] = _displacementsTotal[2 * element.EndNodeID - 2, 0];
                 Displacement[3, 0] = _displacementsTotal[2 * element.EndNodeID - 1, 0];
+
+                var displacementLocal = element.T * Displacement;
+                element.IEndDisplacement = displacementLocal[0, 0];
+                element.JEndDisplacement = displacementLocal[1, 0];
+                element.IEndForce = element.E*element.A/element.L*(element.JEndDisplacement- element.IEndDisplacement);
+                element.JEndForce = element.E * element.A / element.L * (element.IEndDisplacement - element.JEndDisplacement);
+
             }
         }
 

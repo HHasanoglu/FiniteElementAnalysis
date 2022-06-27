@@ -42,6 +42,10 @@ namespace SSH.TrussSolver
         private Matrix<double> _T;
         private Matrix<double> _kl;
         private Matrix<double> _kg;
+        private double _IEndDisplacement;
+        private double _JEndDisplacement;
+        private double _IEndForce;
+        private double _JEndForce;
 
         //public TrussElement(double startNodeXcoord, double startNodeYcoord, double endNodeXcoord, double endNodeYcoord, double startNodeID, double endNodeID, double E, double A)
         //{
@@ -71,6 +75,14 @@ namespace SSH.TrussSolver
         public int EndNodeID { get => _endNodeID; set => _endNodeID = value; }
         public Matrix<double> kl { get => _kl; set => _kl = value; }
         public Matrix<double> Kg { get => _kg; set => _kg = value; }
+        public Matrix<double> T { get => _T; set => _T = value; }
+        public double IEndDisplacement { get => _IEndDisplacement; set => _IEndDisplacement = value; }
+        public double JEndDisplacement { get => _JEndDisplacement; set => _JEndDisplacement = value; }
+        public double IEndForce { get => _IEndForce; set => _IEndForce = value; }
+        public double JEndForce { get => _JEndForce; set => _JEndForce = value; }
+        public double A { get => _A; set => _A = value; }
+        public double E { get => _E; set => _E = value; }
+        public double L { get => _L; set => _L = value; }
 
         #endregion
 
