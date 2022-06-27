@@ -33,7 +33,7 @@ namespace SSH.TrussSolver
         }
 
         private const int _dofPerNode = 2;
-        private List<TrussElement> _StiffnessList;
+        private List<TrussElement> _ElementsList;
         private List<PointLoad> _loadList;
         private int _TotalNodes;
         private List<RestrainedNodes> _restrainedNodes;
@@ -49,7 +49,7 @@ namespace SSH.TrussSolver
 
         public Assembler(List<TrussElement> stiffnessList, List<PointLoad> loadList, List<RestrainedNodes> restrainedNodes, int totalNodes)
         {
-            _StiffnessList = stiffnessList;
+            _ElementsList = stiffnessList;
             _loadList = loadList;
             _TotalNodes = totalNodes;
             _restrainedNodes = restrainedNodes;
@@ -61,6 +61,21 @@ namespace SSH.TrussSolver
             GetDisplacementVector();
             GetTotalDisplacement();
             GetReactions();
+            getMemberForces();
+        }
+
+        private void getMemberForces()
+        {
+            var Displacement = Matrix<double>.Build.Dense(4, 1);
+
+            foreach (TrussElement element in _ElementsList)
+            {
+
+                Displacement[0,0]=_displacementsTotal[2 * element.StartNodeID - 2, 0];
+                Displacement[1,0]=_displacementsTotal[2 * element.StartNodeID - 1, 0];
+                Displacement[2, 0] = _displacementsTotal[2 * element.EndNodeID - 2, 0];
+                Displacement[3, 0] = _displacementsTotal[2 * element.EndNodeID - 1, 0];
+            }
         }
 
         private void GetReactions()
@@ -72,7 +87,7 @@ namespace SSH.TrussSolver
         {
             _KG = Matrix<double>.Build.Dense(_Ndof, _Ndof);
             //var sorted = StiffnessMatrixList.Ordw(x => x.StartNode);
-            foreach (TrussElement element in _StiffnessList)
+            foreach (TrussElement element in _ElementsList)
             {
                 Matrix<double> Kg = element.Kg;
                 var st1 = 2 * element.StartNodeID - 2;
@@ -101,8 +116,8 @@ namespace SSH.TrussSolver
 
             int[] G = new int[2 * _dofPerNode];
 
-            _KG = Matrix<double>.Build.Dense(count, count);
-            foreach (TrussElement element in _StiffnessList)
+            _KGReduced = Matrix<double>.Build.Dense(count, count);
+            foreach (TrussElement element in _ElementsList)
             {
                 for (int i = 0; i < _dofPerNode; i++)
                 {
@@ -119,7 +134,7 @@ namespace SSH.TrussSolver
                         var Q = G[j];
                         if (P != -1 && Q != -1)
                         {
-                            _KG[P, Q] = _KG[P, Q] + Kg[i, j];
+                            _KGReduced[P, Q] = _KGReduced[P, Q] + Kg[i, j];
                         }
                     }
                 }
@@ -133,7 +148,7 @@ namespace SSH.TrussSolver
             int count;
             GetMappingArray(out arr2d, out count);
 
-            _force = Matrix<double>.Build.Dense(count, 1);
+            _forceReduced = Matrix<double>.Build.Dense(count, 1);
 
             foreach (PointLoad load in _loadList)
             {
@@ -146,11 +161,11 @@ namespace SSH.TrussSolver
                         {
                             case 0:
 
-                                _force[Q, 0] = load.Load.XComponent;
+                                _forceReduced[Q, 0] = load.Load.XComponent;
                                 break;
                             case 1:
 
-                                _force[Q, 0] = load.Load.YComponent;
+                                _forceReduced[Q, 0] = load.Load.YComponent;
                                 break;
                         }
                     }
