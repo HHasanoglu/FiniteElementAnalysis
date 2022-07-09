@@ -1,4 +1,5 @@
 ﻿using SSH.TrussSolver;
+using System;
 using System.Collections.Generic;
 
 namespace SSH
@@ -9,11 +10,30 @@ namespace SSH
         public SSHMain()
         {
             InitializeComponent();
-            prepareData();
+            SubscribeToEvents();
         }
 
-        private void prepareData()
+
+        private List<NodesInfo> _NodesList;
+        private void SubscribeToEvents()
         {
+            btnAdd.Click += BtnAdd_Click;
+            btnAddNode.Click += BtnAddNode_Click;
+        }
+
+        private void BtnAddNode_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void BtnAdd_Click(object sender, EventArgs e)
+        {
+
+
+
+
+
+
             NodesInfo node1 = new NodesInfo(0, 0, 1);
             NodesInfo node2 = new NodesInfo(3, 0, 2);
             NodesInfo node3 = new NodesInfo(0, 4, 3);
@@ -38,10 +58,7 @@ namespace SSH
             TrussElement element2 = new TrussElement(3, 0, 0, 4, 2, 3, 1, 1);
             trussMemberList.Add(element2);
 
-            Assembler assembler = new Assembler(trussMemberList, loadList,restrainedNodes, listOfNodes.Count);
-
-
-
+            Assembler assembler = new Assembler(trussMemberList, loadList, restrainedNodes, listOfNodes.Count);
         }
     }
 }
