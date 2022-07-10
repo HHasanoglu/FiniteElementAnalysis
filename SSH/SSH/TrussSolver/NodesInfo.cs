@@ -7,7 +7,7 @@ namespace SSH.TrussSolver
     public class NodesInfo
     {
         #region Ctor
-        public NodesInfo(double xcoord, double ycoord, double NodeID)
+        public NodesInfo(double xcoord, double ycoord, int NodeID)
         {
             _xcoord = xcoord;
             _ycoord = ycoord;
@@ -20,7 +20,7 @@ namespace SSH.TrussSolver
 
         private double _xcoord;
         private double _ycoord;
-        private double _NodeID;
+        private int _NodeID;
 
         #endregion
 
@@ -28,7 +28,7 @@ namespace SSH.TrussSolver
         #region Public Properties
         public double Xcoord { get => _xcoord; set => _xcoord = value; }
         public double Ycoord { get => _ycoord; set => _ycoord = value; }
-        public double NodeID { get => _NodeID; set => _NodeID = value; }
+        public int ID { get => _NodeID; set => _NodeID = value; }
 
         #endregion
     }

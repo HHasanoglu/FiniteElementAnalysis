@@ -9,14 +9,14 @@ namespace SSH.TrussSolver
     {
         #region Ctor
 
-        public TrussElement(double startNodeXcoord, double startNodeYcoord, double endNodeXcoord, double endNodeYcoord, int startNodeID, int endNodeID, double E, double A)
+        public TrussElement(NodesInfo NodeI, NodesInfo NodeJ, double E, double A)
         {
-            _startNodeXcoord = startNodeXcoord;
-            _startNodeYcoord = startNodeYcoord;
-            _endNodeXcoord = endNodeXcoord;
-            _endNodeYcoord = endNodeYcoord;
-            _startNodeID = startNodeID;
-            _endNodeID = endNodeID;
+            _startNodeXcoord = NodeI.Xcoord;
+            _startNodeYcoord = NodeI.Ycoord;
+            _endNodeXcoord = NodeJ.Xcoord;
+            _endNodeYcoord = NodeJ.Ycoord;
+            _startNodeID = NodeI.ID;
+            _endNodeID = NodeJ.ID;
             _E = E;
             _A = A;
             EvaluateProperties();
@@ -83,6 +83,7 @@ namespace SSH.TrussSolver
         public double A { get => _A; set => _A = value; }
         public double E { get => _E; set => _E = value; }
         public double L { get => _L; set => _L = value; }
+        public double Theta { get => 180 / Math.PI * _theta; set => _theta = value; }
 
         #endregion
 
