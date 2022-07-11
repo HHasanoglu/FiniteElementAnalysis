@@ -16,12 +16,25 @@ namespace SSH
             SubscribeToEvents();
             _nodesList = new List<NodesInfo>();
             _TrussElementsList = new List<TrussElement>();
-
+            _restrainedNodes = new List<RestrainedNode>();
+            _nodalForces = new List<PointLoad>();
+            prepareUI();
             SetNodeTableColumns();
             SetElementsTableColumns();
+            SetBCTableColumns();
+            SetLoadTableColumns();
             EditNodeTableGridView();
             EditElementsTableGridView();
+            EditBCTableGridView();
+            EditLoadTableGridView();
 
+        }
+
+        private void prepareUI()
+        {
+            cmbSupportType.Items.Add(eRestrainedDir.X);
+            cmbSupportType.Items.Add(eRestrainedDir.Y);
+            cmbSupportType.Items.Add(eRestrainedDir.XY);
         }
 
         #endregion
@@ -33,6 +46,10 @@ namespace SSH
         private int _nodeCount;
         private DataTable _dataNodeTable;
         private DataTable _dataTrussElementsTable;
+        private DataTable _dataBoundaryConditionsTable;
+        private DataTable _dataLoadTable;
+        private List<RestrainedNode> _restrainedNodes;
+        private List<PointLoad> _nodalForces;
 
         #endregion
 
@@ -41,6 +58,16 @@ namespace SSH
         {
             btnAddNode.Click += BtnAddNode_Click;
             btnAddElement.Click += BtnAddElement_Click;
+            btnAddLoad.Click += BtnAddLoad_Click;
+            btnAddRestrain.Click += BtnAddRestrain_Click;
+        }
+
+        private void BtnAddRestrain_Click(object sender, EventArgs e)
+        {
+            eRestrainedDir restraniedType = (eRestrainedDir)cmbSupportType.SelectedIndex;
+            int Id = Convert.ToInt32(txtBCNodeId.Text);
+            _restrainedNodes.Add(new RestrainedNode(Id, restraniedType));
+            AddRestrainedDataRows();
         }
 
         private void BtnAddElement_Click(object sender, EventArgs e)
@@ -89,6 +116,36 @@ namespace SSH
             gvTrussElements.Columns[2].AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
         }
 
+        private void EditBCTableGridView()
+        {
+            gvBoundaryConditions.OptionsView.ShowGroupPanel = false;
+            gvBoundaryConditions.OptionsCustomization.AllowColumnMoving = false;
+            gvBoundaryConditions.OptionsCustomization.AllowFilter = false;
+            gvBoundaryConditions.OptionsMenu.EnableColumnMenu = false;
+            gvBoundaryConditions.OptionsView.ShowIndicator = false;
+            gvBoundaryConditions.OptionsView.AllowHtmlDrawHeaders = true;
+            gvBoundaryConditions.OptionsView.ColumnAutoWidth = true;
+            gvBoundaryConditions.Columns[0].AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Near;
+            gvBoundaryConditions.Columns[1].AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            gvBoundaryConditions.Columns[0].AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Near;
+            gvBoundaryConditions.Columns[1].AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+        }
+
+        private void EditLoadTableGridView()
+        {
+            gvLoads.OptionsView.ShowGroupPanel = false;
+            gvLoads.OptionsCustomization.AllowColumnMoving = false;
+            gvLoads.OptionsCustomization.AllowFilter = false;
+            gvLoads.OptionsMenu.EnableColumnMenu = false;
+            gvLoads.OptionsView.ShowIndicator = false;
+            gvLoads.OptionsView.AllowHtmlDrawHeaders = true;
+            gvLoads.OptionsView.ColumnAutoWidth = true;
+            gvLoads.Columns[0].AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Near;
+            gvLoads.Columns[1].AppearanceHeader.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            gvLoads.Columns[0].AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Near;
+            gvLoads.Columns[1].AppearanceCell.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+        }
+
         private void AddNodesDataRows()
         {
             DataRow row;
@@ -117,6 +174,32 @@ namespace SSH
             }
         }
 
+        private void AddLoadsDataRows()
+        {
+            DataRow row;
+            _dataLoadTable.Rows.Clear();
+            foreach (PointLoad force in _nodalForces)
+            {
+                row = _dataLoadTable.NewRow();
+                row[0] = force.NodeID;
+                row[1] = force.Load.XComponent;
+                row[2] = force.Load.YComponent;
+                _dataLoadTable.Rows.Add(row);
+            }
+        }
+        private void AddRestrainedDataRows()
+        {
+            DataRow row;
+            _dataBoundaryConditionsTable.Rows.Clear();
+            foreach (RestrainedNode restrain in _restrainedNodes)
+            {
+                row = _dataBoundaryConditionsTable.NewRow();
+                row[0] = restrain.NodeID;
+                row[1] = restrain.Direction;
+                _dataBoundaryConditionsTable.Rows.Add(row);
+            }
+        }
+
         private void SetNodeTableColumns()
         {
             _dataNodeTable = new DataTable();
@@ -131,15 +214,26 @@ namespace SSH
             _dataTrussElementsTable = new DataTable();
             _dataTrussElementsTable.Columns.Add("Start NodeID", typeof(int));
             _dataTrussElementsTable.Columns.Add("End NodeID", typeof(int));
-            //_dataTrussElementsTable.Columns.Add("Start Node Xcoord", typeof(double)); 
-            //_dataTrussElementsTable.Columns.Add("Start Node Ycoord", typeof(double));
-            //_dataTrussElementsTable.Columns.Add("End Node Xcoord", typeof(double)); 
-            //_dataTrussElementsTable.Columns.Add("End Node Ycoord", typeof(double)); 
             _dataTrussElementsTable.Columns.Add("Length", typeof(double)); 
             _dataTrussElementsTable.Columns.Add("Angle", typeof(double)); 
             gcTrussElements.DataSource = _dataTrussElementsTable;
         }
+        private void SetBCTableColumns()
+        {
+            _dataBoundaryConditionsTable = new DataTable();
+            _dataBoundaryConditionsTable.Columns.Add(" Node ID", typeof(int));
+            _dataBoundaryConditionsTable.Columns.Add("Restrained Direction", typeof(eRestrainedDir));
+            gcBoundaryConditions.DataSource = _dataBoundaryConditionsTable;
+        }
 
+        private void SetLoadTableColumns()
+        {
+            _dataLoadTable = new DataTable();
+            _dataLoadTable.Columns.Add(" Node ID", typeof(int));
+            _dataLoadTable.Columns.Add("X Component", typeof(double));
+            _dataLoadTable.Columns.Add("Y Component", typeof(double));
+            gcLoads.DataSource = _dataLoadTable;
+        }
 
         #endregion
 
@@ -154,40 +248,25 @@ namespace SSH
 
         }
 
+        private void BtnAddLoad_Click(object sender, EventArgs e)
+        {
+            int node = Convert.ToInt32(txtNodeIdLoading.Text);
+            double xComponent = Convert.ToDouble(txtXComponent.Text);
+            double YComponent = Convert.ToDouble(txtYComponent.Text);
+            _nodalForces.Add(new PointLoad(node, new Load(xComponent, YComponent)));
+            AddLoadsDataRows();
+
+        }
+
+
+
         private void BtnAdd_Click(object sender, EventArgs e)
 
         {
-
-
-
-
-
-
-            //NodesInfo node1 = new NodesInfo(0, 0, 1);
-            //NodesInfo node2 = new NodesInfo(3, 0, 2);
-            //NodesInfo node3 = new NodesInfo(0, 4, 3);
-            //List<NodesInfo> listOfNodes = new List<NodesInfo>
-            //{
-            //    node1,
-            //    node2,
-            //    node3
-            //};
-            List<RestrainedNodes> restrainedNodes = new List<RestrainedNodes> {
-                new RestrainedNodes(1,eRestrainedDir.XYDirection),
-                new RestrainedNodes(3,eRestrainedDir.XYDirection),
-                };
-
             List<PointLoad> loadList = new List<PointLoad>();
             PointLoad Load = new PointLoad(2, new Load(0, -150000));
             loadList.Add(Load);
-
-            //List<TrussElement> trussMemberList = new List<TrussElement>();
-            //TrussElement element1 = new TrussElement(0, 0, 3, 0, 1, 2, 1, 1);
-            //trussMemberList.Add(element1);
-            //TrussElement element2 = new TrussElement(3, 0, 0, 4, 2, 3, 1, 1);
-            //trussMemberList.Add(element2);
-
-            Assembler assembler = new Assembler(_TrussElementsList, loadList, restrainedNodes, _nodesList.Count);
+            Assembler assembler = new Assembler(_TrussElementsList, loadList, _restrainedNodes, _nodesList.Count);
         }
 
         #endregion

@@ -17,7 +17,7 @@ namespace SSH.TrussSolver
 
         private int _totalDofs;
         private List<PointLoad> _loadList;
-        private List<RestrainedNodes> _restrainedNodes;
+        private List<RestrainedNode> _restrainedNodes;
 
 
     }

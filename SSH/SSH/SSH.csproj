@@ -74,7 +74,7 @@
     <Compile Include="TrussSolver\NodesInfo.cs" />
     <Compile Include="TrussSolver\PointLoad.cs" />
     <Compile Include="TrussSolver\RestrainedAxis.cs" />
-    <Compile Include="TrussSolver\RestrainedNodes.cs" />
+    <Compile Include="TrussSolver\RestrainedNode.cs" />
     <Compile Include="TrussSolver\TrussElement.cs" />
     <EmbeddedResource Include="SSHMain.resx">
       <DependentUpon>SSHMain.cs</DependentUpon>

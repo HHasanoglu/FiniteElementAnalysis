@@ -8,8 +8,8 @@ namespace SSH.TrussSolver
 {
     public enum eRestrainedDir
     {
-        XDirection,
-        YDirection,
-        XYDirection
+        X,
+        Y,
+        XY
     }
 }

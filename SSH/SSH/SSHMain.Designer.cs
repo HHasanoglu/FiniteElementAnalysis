@@ -40,12 +40,15 @@ namespace SSH
             this.label2 = new System.Windows.Forms.Label();
             this.txtSectionArea = new System.Windows.Forms.TextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.txtNodeJ = new System.Windows.Forms.TextBox();
+            this.label5 = new System.Windows.Forms.Label();
             this.txtNodeI = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.btnAddElement = new System.Windows.Forms.Button();
             this.gcTrussElements = new DevExpress.XtraGrid.GridControl();
             this.gvTrussElements = new DevExpress.XtraGrid.Views.Grid.GridView();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.gcNodes = new DevExpress.XtraGrid.GridControl();
             this.gvNodes = new DevExpress.XtraGrid.Views.Grid.GridView();
@@ -55,44 +58,43 @@ namespace SSH
             this.label12 = new System.Windows.Forms.Label();
             this.txtNodeX = new System.Windows.Forms.TextBox();
             this.label13 = new System.Windows.Forms.Label();
-            this.txtNodeJ = new System.Windows.Forms.TextBox();
-            this.label5 = new System.Windows.Forms.Label();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
-            this.gridControl1 = new DevExpress.XtraGrid.GridControl();
-            this.gridView1 = new DevExpress.XtraGrid.Views.Grid.GridView();
-            this.button1 = new System.Windows.Forms.Button();
+            this.gcLoads = new DevExpress.XtraGrid.GridControl();
+            this.gvLoads = new DevExpress.XtraGrid.Views.Grid.GridView();
+            this.btnAddLoad = new System.Windows.Forms.Button();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.txtYComponent = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
-            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.txtXComponent = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
             this.groupBox8 = new System.Windows.Forms.GroupBox();
-            this.gridControl2 = new DevExpress.XtraGrid.GridControl();
-            this.gridView2 = new DevExpress.XtraGrid.Views.Grid.GridView();
-            this.button2 = new System.Windows.Forms.Button();
+            this.gcBoundaryConditions = new DevExpress.XtraGrid.GridControl();
+            this.gvBoundaryConditions = new DevExpress.XtraGrid.Views.Grid.GridView();
+            this.btnAddRestrain = new System.Windows.Forms.Button();
             this.groupBox9 = new System.Windows.Forms.GroupBox();
-            this.textBox3 = new System.Windows.Forms.TextBox();
+            this.cmbSupportType = new System.Windows.Forms.ComboBox();
             this.label7 = new System.Windows.Forms.Label();
-            this.textBox4 = new System.Windows.Forms.TextBox();
+            this.txtBCNodeId = new System.Windows.Forms.TextBox();
+            this.N = new System.Windows.Forms.Label();
+            this.txtNodeIdLoading = new System.Windows.Forms.TextBox();
             this.label8 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.ribbonControl1)).BeginInit();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gcTrussElements)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gvTrussElements)).BeginInit();
             this.groupBox3.SuspendLayout();
+            this.groupBox2.SuspendLayout();
             this.groupBox4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gcNodes)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gvNodes)).BeginInit();
             this.groupBox6.SuspendLayout();
-            this.groupBox2.SuspendLayout();
             this.groupBox5.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.gridControl1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.gridView1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gcLoads)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gvLoads)).BeginInit();
             this.groupBox7.SuspendLayout();
             this.groupBox8.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.gridControl2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.gridView2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gcBoundaryConditions)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gvBoundaryConditions)).BeginInit();
             this.groupBox9.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -188,6 +190,22 @@ namespace SSH
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Nodes Info";
             // 
+            // txtNodeJ
+            // 
+            this.txtNodeJ.Location = new System.Drawing.Point(72, 56);
+            this.txtNodeJ.Name = "txtNodeJ";
+            this.txtNodeJ.Size = new System.Drawing.Size(85, 21);
+            this.txtNodeJ.TabIndex = 16;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(11, 59);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(55, 13);
+            this.label5.TabIndex = 15;
+            this.label5.Text = "Node J-ID";
+            // 
             // txtNodeI
             // 
             this.txtNodeI.Location = new System.Drawing.Point(72, 29);
@@ -246,12 +264,26 @@ namespace SSH
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Elements Info";
             // 
+            // groupBox2
+            // 
+            this.groupBox2.AccessibleRole = System.Windows.Forms.AccessibleRole.MenuPopup;
+            this.groupBox2.Controls.Add(this.txtStiffness);
+            this.groupBox2.Controls.Add(this.txtSectionArea);
+            this.groupBox2.Controls.Add(this.label2);
+            this.groupBox2.Controls.Add(this.label1);
+            this.groupBox2.Location = new System.Drawing.Point(16, 47);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(171, 89);
+            this.groupBox2.TabIndex = 18;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Section Info";
+            // 
             // groupBox4
             // 
             this.groupBox4.Controls.Add(this.gcNodes);
             this.groupBox4.Controls.Add(this.btnAddNode);
             this.groupBox4.Controls.Add(this.groupBox6);
-            this.groupBox4.Location = new System.Drawing.Point(0, 164);
+            this.groupBox4.Location = new System.Drawing.Point(12, 164);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Size = new System.Drawing.Size(388, 305);
             this.groupBox4.TabIndex = 19;
@@ -328,199 +360,188 @@ namespace SSH
             this.label13.TabIndex = 11;
             this.label13.Text = "Xcoord";
             // 
-            // txtNodeJ
-            // 
-            this.txtNodeJ.Location = new System.Drawing.Point(72, 56);
-            this.txtNodeJ.Name = "txtNodeJ";
-            this.txtNodeJ.Size = new System.Drawing.Size(85, 21);
-            this.txtNodeJ.TabIndex = 16;
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(11, 59);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(55, 13);
-            this.label5.TabIndex = 15;
-            this.label5.Text = "Node J-ID";
-            // 
-            // groupBox2
-            // 
-            this.groupBox2.AccessibleRole = System.Windows.Forms.AccessibleRole.MenuPopup;
-            this.groupBox2.Controls.Add(this.txtStiffness);
-            this.groupBox2.Controls.Add(this.txtSectionArea);
-            this.groupBox2.Controls.Add(this.label2);
-            this.groupBox2.Controls.Add(this.label1);
-            this.groupBox2.Location = new System.Drawing.Point(16, 47);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(171, 89);
-            this.groupBox2.TabIndex = 18;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Section Info";
-            // 
             // groupBox5
             // 
-            this.groupBox5.Controls.Add(this.gridControl1);
-            this.groupBox5.Controls.Add(this.button1);
+            this.groupBox5.Controls.Add(this.gcLoads);
+            this.groupBox5.Controls.Add(this.btnAddLoad);
             this.groupBox5.Controls.Add(this.groupBox7);
-            this.groupBox5.Location = new System.Drawing.Point(394, 164);
+            this.groupBox5.Location = new System.Drawing.Point(406, 164);
             this.groupBox5.Name = "groupBox5";
             this.groupBox5.Size = new System.Drawing.Size(388, 305);
             this.groupBox5.TabIndex = 20;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Loading Info";
             // 
-            // gridControl1
+            // gcLoads
             // 
-            this.gridControl1.Location = new System.Drawing.Point(16, 113);
-            this.gridControl1.MainView = this.gridView1;
-            this.gridControl1.MenuManager = this.ribbonControl1;
-            this.gridControl1.Name = "gridControl1";
-            this.gridControl1.Size = new System.Drawing.Size(305, 175);
-            this.gridControl1.TabIndex = 17;
-            this.gridControl1.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
-            this.gridView1});
+            this.gcLoads.Location = new System.Drawing.Point(16, 113);
+            this.gcLoads.MainView = this.gvLoads;
+            this.gcLoads.MenuManager = this.ribbonControl1;
+            this.gcLoads.Name = "gcLoads";
+            this.gcLoads.Size = new System.Drawing.Size(305, 175);
+            this.gcLoads.TabIndex = 17;
+            this.gcLoads.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
+            this.gvLoads});
             // 
-            // gridView1
+            // gvLoads
             // 
-            this.gridView1.GridControl = this.gridControl1;
-            this.gridView1.Name = "gridView1";
+            this.gvLoads.GridControl = this.gcLoads;
+            this.gvLoads.Name = "gvLoads";
             // 
-            // button1
+            // btnAddLoad
             // 
-            this.button1.Location = new System.Drawing.Point(235, 48);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(86, 49);
-            this.button1.TabIndex = 16;
-            this.button1.Text = "Add Node";
-            this.button1.UseVisualStyleBackColor = true;
+            this.btnAddLoad.Location = new System.Drawing.Point(296, 37);
+            this.btnAddLoad.Name = "btnAddLoad";
+            this.btnAddLoad.Size = new System.Drawing.Size(86, 49);
+            this.btnAddLoad.TabIndex = 16;
+            this.btnAddLoad.Text = "Add Load";
+            this.btnAddLoad.UseVisualStyleBackColor = true;
             // 
             // groupBox7
             // 
-            this.groupBox7.Controls.Add(this.textBox1);
+            this.groupBox7.Controls.Add(this.txtNodeIdLoading);
+            this.groupBox7.Controls.Add(this.label8);
+            this.groupBox7.Controls.Add(this.txtYComponent);
             this.groupBox7.Controls.Add(this.label3);
-            this.groupBox7.Controls.Add(this.textBox2);
+            this.groupBox7.Controls.Add(this.txtXComponent);
             this.groupBox7.Controls.Add(this.label6);
             this.groupBox7.Location = new System.Drawing.Point(16, 29);
             this.groupBox7.Name = "groupBox7";
-            this.groupBox7.Size = new System.Drawing.Size(213, 78);
+            this.groupBox7.Size = new System.Drawing.Size(274, 78);
             this.groupBox7.TabIndex = 12;
             this.groupBox7.TabStop = false;
-            this.groupBox7.Text = "Nodes Input";
+            this.groupBox7.Text = "Components";
             // 
-            // textBox1
+            // txtYComponent
             // 
-            this.textBox1.Location = new System.Drawing.Point(58, 47);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(85, 21);
-            this.textBox1.TabIndex = 14;
+            this.txtYComponent.Location = new System.Drawing.Point(183, 47);
+            this.txtYComponent.Name = "txtYComponent";
+            this.txtYComponent.Size = new System.Drawing.Size(85, 21);
+            this.txtYComponent.TabIndex = 14;
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(12, 50);
+            this.label3.Location = new System.Drawing.Point(164, 50);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(40, 13);
+            this.label3.Size = new System.Drawing.Size(13, 13);
             this.label3.TabIndex = 13;
-            this.label3.Text = "Ycoord";
+            this.label3.Text = "Y";
             // 
-            // textBox2
+            // txtXComponent
             // 
-            this.textBox2.Location = new System.Drawing.Point(58, 20);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(85, 21);
-            this.textBox2.TabIndex = 12;
+            this.txtXComponent.Location = new System.Drawing.Point(183, 20);
+            this.txtXComponent.Name = "txtXComponent";
+            this.txtXComponent.Size = new System.Drawing.Size(85, 21);
+            this.txtXComponent.TabIndex = 12;
             // 
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(12, 23);
+            this.label6.Location = new System.Drawing.Point(164, 23);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(40, 13);
+            this.label6.Size = new System.Drawing.Size(13, 13);
             this.label6.TabIndex = 11;
-            this.label6.Text = "Xcoord";
+            this.label6.Text = "X";
             // 
             // groupBox8
             // 
-            this.groupBox8.Controls.Add(this.gridControl2);
-            this.groupBox8.Controls.Add(this.button2);
+            this.groupBox8.Controls.Add(this.gcBoundaryConditions);
+            this.groupBox8.Controls.Add(this.btnAddRestrain);
             this.groupBox8.Controls.Add(this.groupBox9);
-            this.groupBox8.Location = new System.Drawing.Point(788, 164);
+            this.groupBox8.Location = new System.Drawing.Point(800, 164);
             this.groupBox8.Name = "groupBox8";
             this.groupBox8.Size = new System.Drawing.Size(388, 305);
-            this.groupBox8.TabIndex = 21;
+            this.groupBox8.TabIndex = 23;
             this.groupBox8.TabStop = false;
             this.groupBox8.Text = "Boundary Conditions Info";
             // 
-            // gridControl2
+            // gcBoundaryConditions
             // 
-            this.gridControl2.Location = new System.Drawing.Point(16, 113);
-            this.gridControl2.MainView = this.gridView2;
-            this.gridControl2.MenuManager = this.ribbonControl1;
-            this.gridControl2.Name = "gridControl2";
-            this.gridControl2.Size = new System.Drawing.Size(305, 175);
-            this.gridControl2.TabIndex = 17;
-            this.gridControl2.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
-            this.gridView2});
+            this.gcBoundaryConditions.Location = new System.Drawing.Point(16, 113);
+            this.gcBoundaryConditions.MainView = this.gvBoundaryConditions;
+            this.gcBoundaryConditions.MenuManager = this.ribbonControl1;
+            this.gcBoundaryConditions.Name = "gcBoundaryConditions";
+            this.gcBoundaryConditions.Size = new System.Drawing.Size(305, 175);
+            this.gcBoundaryConditions.TabIndex = 17;
+            this.gcBoundaryConditions.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
+            this.gvBoundaryConditions});
             // 
-            // gridView2
+            // gvBoundaryConditions
             // 
-            this.gridView2.GridControl = this.gridControl2;
-            this.gridView2.Name = "gridView2";
+            this.gvBoundaryConditions.GridControl = this.gcBoundaryConditions;
+            this.gvBoundaryConditions.Name = "gvBoundaryConditions";
             // 
-            // button2
+            // btnAddRestrain
             // 
-            this.button2.Location = new System.Drawing.Point(235, 48);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(86, 49);
-            this.button2.TabIndex = 16;
-            this.button2.Text = "Add Node";
-            this.button2.UseVisualStyleBackColor = true;
+            this.btnAddRestrain.Location = new System.Drawing.Point(235, 48);
+            this.btnAddRestrain.Name = "btnAddRestrain";
+            this.btnAddRestrain.Size = new System.Drawing.Size(86, 49);
+            this.btnAddRestrain.TabIndex = 16;
+            this.btnAddRestrain.Text = "Add Constraint";
+            this.btnAddRestrain.UseVisualStyleBackColor = true;
             // 
             // groupBox9
             // 
-            this.groupBox9.Controls.Add(this.textBox3);
+            this.groupBox9.Controls.Add(this.cmbSupportType);
             this.groupBox9.Controls.Add(this.label7);
-            this.groupBox9.Controls.Add(this.textBox4);
-            this.groupBox9.Controls.Add(this.label8);
+            this.groupBox9.Controls.Add(this.txtBCNodeId);
+            this.groupBox9.Controls.Add(this.N);
             this.groupBox9.Location = new System.Drawing.Point(16, 29);
             this.groupBox9.Name = "groupBox9";
             this.groupBox9.Size = new System.Drawing.Size(213, 78);
             this.groupBox9.TabIndex = 12;
             this.groupBox9.TabStop = false;
-            this.groupBox9.Text = "Nodes Input";
+            this.groupBox9.Text = "Boundary Conditions";
             // 
-            // textBox3
+            // cmbSupportType
             // 
-            this.textBox3.Location = new System.Drawing.Point(58, 47);
-            this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(85, 21);
-            this.textBox3.TabIndex = 14;
+            this.cmbSupportType.FormattingEnabled = true;
+            this.cmbSupportType.Location = new System.Drawing.Point(93, 47);
+            this.cmbSupportType.Name = "cmbSupportType";
+            this.cmbSupportType.Size = new System.Drawing.Size(85, 21);
+            this.cmbSupportType.TabIndex = 14;
             // 
             // label7
             // 
             this.label7.AutoSize = true;
             this.label7.Location = new System.Drawing.Point(12, 50);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(40, 13);
+            this.label7.Size = new System.Drawing.Size(75, 13);
             this.label7.TabIndex = 13;
-            this.label7.Text = "Ycoord";
+            this.label7.Text = "Restrained Dir";
             // 
-            // textBox4
+            // txtBCNodeId
             // 
-            this.textBox4.Location = new System.Drawing.Point(58, 20);
-            this.textBox4.Name = "textBox4";
-            this.textBox4.Size = new System.Drawing.Size(85, 21);
-            this.textBox4.TabIndex = 12;
+            this.txtBCNodeId.Location = new System.Drawing.Point(93, 23);
+            this.txtBCNodeId.Name = "txtBCNodeId";
+            this.txtBCNodeId.Size = new System.Drawing.Size(85, 21);
+            this.txtBCNodeId.TabIndex = 12;
+            // 
+            // N
+            // 
+            this.N.AutoSize = true;
+            this.N.Location = new System.Drawing.Point(12, 23);
+            this.N.Name = "N";
+            this.N.Size = new System.Drawing.Size(46, 13);
+            this.N.TabIndex = 11;
+            this.N.Text = "Node ID";
+            // 
+            // txtNodeIdLoading
+            // 
+            this.txtNodeIdLoading.Location = new System.Drawing.Point(60, 32);
+            this.txtNodeIdLoading.Name = "txtNodeIdLoading";
+            this.txtNodeIdLoading.Size = new System.Drawing.Size(85, 21);
+            this.txtNodeIdLoading.TabIndex = 16;
             // 
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(12, 23);
+            this.label8.Location = new System.Drawing.Point(8, 40);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(40, 13);
-            this.label8.TabIndex = 11;
-            this.label8.Text = "Xcoord";
+            this.label8.Size = new System.Drawing.Size(46, 13);
+            this.label8.TabIndex = 15;
+            this.label8.Text = "Node ID";
             // 
             // SSHMain
             // 
@@ -541,21 +562,21 @@ namespace SSH
             ((System.ComponentModel.ISupportInitialize)(this.gcTrussElements)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.gvTrussElements)).EndInit();
             this.groupBox3.ResumeLayout(false);
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
             this.groupBox4.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.gcNodes)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.gvNodes)).EndInit();
             this.groupBox6.ResumeLayout(false);
             this.groupBox6.PerformLayout();
-            this.groupBox2.ResumeLayout(false);
-            this.groupBox2.PerformLayout();
             this.groupBox5.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.gridControl1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.gridView1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gcLoads)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gvLoads)).EndInit();
             this.groupBox7.ResumeLayout(false);
             this.groupBox7.PerformLayout();
             this.groupBox8.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.gridControl2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.gridView2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gcBoundaryConditions)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gvBoundaryConditions)).EndInit();
             this.groupBox9.ResumeLayout(false);
             this.groupBox9.PerformLayout();
             this.ResumeLayout(false);
@@ -595,22 +616,24 @@ namespace SSH
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.GroupBox groupBox5;
-        private DevExpress.XtraGrid.GridControl gridControl1;
-        private DevExpress.XtraGrid.Views.Grid.GridView gridView1;
-        private System.Windows.Forms.Button button1;
+        private DevExpress.XtraGrid.GridControl gcLoads;
+        private DevExpress.XtraGrid.Views.Grid.GridView gvLoads;
+        private System.Windows.Forms.Button btnAddLoad;
         private System.Windows.Forms.GroupBox groupBox7;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox txtYComponent;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.TextBox txtXComponent;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.GroupBox groupBox8;
-        private DevExpress.XtraGrid.GridControl gridControl2;
-        private DevExpress.XtraGrid.Views.Grid.GridView gridView2;
-        private System.Windows.Forms.Button button2;
+        private DevExpress.XtraGrid.GridControl gcBoundaryConditions;
+        private DevExpress.XtraGrid.Views.Grid.GridView gvBoundaryConditions;
+        private System.Windows.Forms.Button btnAddRestrain;
         private System.Windows.Forms.GroupBox groupBox9;
-        private System.Windows.Forms.TextBox textBox3;
+        private System.Windows.Forms.ComboBox cmbSupportType;
         private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.TextBox textBox4;
+        private System.Windows.Forms.TextBox txtBCNodeId;
+        private System.Windows.Forms.Label N;
+        private System.Windows.Forms.TextBox txtNodeIdLoading;
         private System.Windows.Forms.Label label8;
     }
 }

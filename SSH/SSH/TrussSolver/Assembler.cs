@@ -20,7 +20,7 @@ namespace SSH.TrussSolver
         {
             foreach (var node in _restrainedNodes)
             {
-                if (node.Direction == eRestrainedDir.XYDirection)
+                if (node.Direction == eRestrainedDir.XY)
                 {
                     _nResTotal += 2;
                 }
@@ -36,7 +36,7 @@ namespace SSH.TrussSolver
         private List<TrussElement> _ElementsList;
         private List<PointLoad> _loadList;
         private int _TotalNodes;
-        private List<RestrainedNodes> _restrainedNodes;
+        private List<RestrainedNode> _restrainedNodes;
         private int _nResTotal = 0;
         private int _Ndof;
         private Matrix<double> _KG;
@@ -47,7 +47,7 @@ namespace SSH.TrussSolver
         private Matrix<double> _displacementsTotal;
         private Matrix<double> _reactions;
 
-        public Assembler(List<TrussElement> stiffnessList, List<PointLoad> loadList, List<RestrainedNodes> restrainedNodes, int totalNodes)
+        public Assembler(List<TrussElement> stiffnessList, List<PointLoad> loadList, List<RestrainedNode> restrainedNodes, int totalNodes)
         {
             _ElementsList = stiffnessList;
             _loadList = loadList;
@@ -186,15 +186,15 @@ namespace SSH.TrussSolver
             foreach (var node in _restrainedNodes)
             {
                 var rowID = node.NodeID;
-                if (node.Direction == eRestrainedDir.XDirection)
+                if (node.Direction == eRestrainedDir.X)
                 {
                     arr2d[rowID - 1, 0] = -1;
                 }
-                else if (node.Direction == eRestrainedDir.YDirection)
+                else if (node.Direction == eRestrainedDir.Y)
                 {
                     arr2d[rowID - 1, 1] = -1;
                 }
-                else if (node.Direction == eRestrainedDir.XYDirection)
+                else if (node.Direction == eRestrainedDir.XY)
                 {
                     arr2d[rowID - 1, 0] = -1;
                     arr2d[rowID - 1, 1] = -1;
