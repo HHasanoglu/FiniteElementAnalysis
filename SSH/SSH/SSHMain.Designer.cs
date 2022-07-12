@@ -63,6 +63,8 @@ namespace SSH
             this.gvLoads = new DevExpress.XtraGrid.Views.Grid.GridView();
             this.btnAddLoad = new System.Windows.Forms.Button();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
+            this.txtNodeIdLoading = new System.Windows.Forms.TextBox();
+            this.label8 = new System.Windows.Forms.Label();
             this.txtYComponent = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.txtXComponent = new System.Windows.Forms.TextBox();
@@ -76,8 +78,8 @@ namespace SSH
             this.label7 = new System.Windows.Forms.Label();
             this.txtBCNodeId = new System.Windows.Forms.TextBox();
             this.N = new System.Windows.Forms.Label();
-            this.txtNodeIdLoading = new System.Windows.Forms.TextBox();
-            this.label8 = new System.Windows.Forms.Label();
+            this.btnSolveTruss = new System.Windows.Forms.Button();
+            this.chartDrawing = new DevExpress.XtraCharts.ChartControl();
             ((System.ComponentModel.ISupportInitialize)(this.ribbonControl1)).BeginInit();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gcTrussElements)).BeginInit();
@@ -96,6 +98,7 @@ namespace SSH
             ((System.ComponentModel.ISupportInitialize)(this.gcBoundaryConditions)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gvBoundaryConditions)).BeginInit();
             this.groupBox9.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.chartDrawing)).BeginInit();
             this.SuspendLayout();
             // 
             // ribbonControl1
@@ -280,6 +283,8 @@ namespace SSH
             // 
             // groupBox4
             // 
+            this.groupBox4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox4.Controls.Add(this.gcNodes);
             this.groupBox4.Controls.Add(this.btnAddNode);
             this.groupBox4.Controls.Add(this.groupBox6);
@@ -334,6 +339,7 @@ namespace SSH
             this.txtNodeY.Name = "txtNodeY";
             this.txtNodeY.Size = new System.Drawing.Size(85, 21);
             this.txtNodeY.TabIndex = 14;
+            this.txtNodeY.Text = "0";
             // 
             // label12
             // 
@@ -350,6 +356,7 @@ namespace SSH
             this.txtNodeX.Name = "txtNodeX";
             this.txtNodeX.Size = new System.Drawing.Size(85, 21);
             this.txtNodeX.TabIndex = 12;
+            this.txtNodeX.Text = "0";
             // 
             // label13
             // 
@@ -362,6 +369,8 @@ namespace SSH
             // 
             // groupBox5
             // 
+            this.groupBox5.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox5.Controls.Add(this.gcLoads);
             this.groupBox5.Controls.Add(this.btnAddLoad);
             this.groupBox5.Controls.Add(this.groupBox7);
@@ -412,6 +421,22 @@ namespace SSH
             this.groupBox7.TabStop = false;
             this.groupBox7.Text = "Components";
             // 
+            // txtNodeIdLoading
+            // 
+            this.txtNodeIdLoading.Location = new System.Drawing.Point(60, 32);
+            this.txtNodeIdLoading.Name = "txtNodeIdLoading";
+            this.txtNodeIdLoading.Size = new System.Drawing.Size(85, 21);
+            this.txtNodeIdLoading.TabIndex = 16;
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(8, 40);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(46, 13);
+            this.label8.TabIndex = 15;
+            this.label8.Text = "Node ID";
+            // 
             // txtYComponent
             // 
             this.txtYComponent.Location = new System.Drawing.Point(183, 47);
@@ -446,6 +471,8 @@ namespace SSH
             // 
             // groupBox8
             // 
+            this.groupBox8.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox8.Controls.Add(this.gcBoundaryConditions);
             this.groupBox8.Controls.Add(this.btnAddRestrain);
             this.groupBox8.Controls.Add(this.groupBox9);
@@ -527,27 +554,36 @@ namespace SSH
             this.N.TabIndex = 11;
             this.N.Text = "Node ID";
             // 
-            // txtNodeIdLoading
+            // btnSolveTruss
             // 
-            this.txtNodeIdLoading.Location = new System.Drawing.Point(60, 32);
-            this.txtNodeIdLoading.Name = "txtNodeIdLoading";
-            this.txtNodeIdLoading.Size = new System.Drawing.Size(85, 21);
-            this.txtNodeIdLoading.TabIndex = 16;
+            this.btnSolveTruss.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnSolveTruss.Location = new System.Drawing.Point(943, 493);
+            this.btnSolveTruss.Name = "btnSolveTruss";
+            this.btnSolveTruss.Size = new System.Drawing.Size(86, 49);
+            this.btnSolveTruss.TabIndex = 19;
+            this.btnSolveTruss.Text = "Solve Truss";
+            this.btnSolveTruss.UseVisualStyleBackColor = true;
             // 
-            // label8
+            // chartDrawing
             // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(8, 40);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(46, 13);
-            this.label8.TabIndex = 15;
-            this.label8.Text = "Node ID";
+            this.chartDrawing.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.chartDrawing.Legend.Name = "Default Legend";
+            this.chartDrawing.Location = new System.Drawing.Point(757, 560);
+            this.chartDrawing.Name = "chartDrawing";
+            this.chartDrawing.SeriesSerializable = new DevExpress.XtraCharts.Series[0];
+            this.chartDrawing.Size = new System.Drawing.Size(467, 124);
+            this.chartDrawing.TabIndex = 30;
             // 
             // SSHMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1237, 697);
+            this.Controls.Add(this.chartDrawing);
+            this.Controls.Add(this.btnSolveTruss);
             this.Controls.Add(this.groupBox8);
             this.Controls.Add(this.groupBox5);
             this.Controls.Add(this.groupBox4);
@@ -579,6 +615,7 @@ namespace SSH
             ((System.ComponentModel.ISupportInitialize)(this.gvBoundaryConditions)).EndInit();
             this.groupBox9.ResumeLayout(false);
             this.groupBox9.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.chartDrawing)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -635,6 +672,8 @@ namespace SSH
         private System.Windows.Forms.Label N;
         private System.Windows.Forms.TextBox txtNodeIdLoading;
         private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Button btnSolveTruss;
+        private DevExpress.XtraCharts.ChartControl chartDrawing;
     }
 }
 

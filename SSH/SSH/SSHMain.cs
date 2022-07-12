@@ -1,7 +1,10 @@
-﻿using SSH.TrussSolver;
+﻿using DevExpress.XtraCharts;
+using SSH.TrussSolver;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Drawing;
+using System.Windows.Forms;
 
 namespace SSH
 {
@@ -30,11 +33,28 @@ namespace SSH
 
         }
 
+        private void RefreshGraphics()
+        {
+            Pen pen = new Pen(new SolidBrush(Color.SkyBlue));
+            //for (int i = 0; i < 500; i+=100)
+            //{
+            //}
+                    _g.DrawLine(pen, new Point(0, 100), new Point(1000, 100));
+                    _g.DrawLine(pen, new Point(0, 0), new Point(1000, 200));
+                    _g.DrawLine(pen, new Point(0, 150), new Point(1000, 300));
+        }
+
         private void prepareUI()
         {
             cmbSupportType.Items.Add(eRestrainedDir.X);
             cmbSupportType.Items.Add(eRestrainedDir.Y);
             cmbSupportType.Items.Add(eRestrainedDir.XY);
+            // Add a title to the chart (if necessary).
+            //chElements.Titles.Add(new ChartTitle());
+            //chElements.Titles[0].Text = "A Line Chart";
+            //drawingControl.OptionsView.ShowRulers = false;
+            //drawingControl.OptionsView.ShowPageBreaks = false;
+            //drawingControl.OptionsView.ShowGrid= false;
         }
 
         #endregion
@@ -50,6 +70,7 @@ namespace SSH
         private DataTable _dataLoadTable;
         private List<RestrainedNode> _restrainedNodes;
         private List<PointLoad> _nodalForces;
+        private Graphics _g;
 
         #endregion
 
@@ -60,6 +81,14 @@ namespace SSH
             btnAddElement.Click += BtnAddElement_Click;
             btnAddLoad.Click += BtnAddLoad_Click;
             btnAddRestrain.Click += BtnAddRestrain_Click;
+            btnSolveTruss.Click += BtnSolveTruss_Click;
+        }
+
+
+
+        private void BtnSolveTruss_Click(object sender, EventArgs e)
+        {
+            Assembler assembler = new Assembler(_TrussElementsList, _nodalForces, _restrainedNodes, _nodesList.Count);
         }
 
         private void BtnAddRestrain_Click(object sender, EventArgs e)
@@ -245,7 +274,9 @@ namespace SSH
             var Ycoord = Convert.ToDouble(txtNodeY.Text);
             _nodesList.Add(new NodesInfo(Xcoord, Ycoord, ++_nodeCount));
             AddNodesDataRows();
-
+            drawChart();
+            //RefreshGraphics();
+            //drawingControl.Refresh();
         }
 
         private void BtnAddLoad_Click(object sender, EventArgs e)
@@ -258,18 +289,44 @@ namespace SSH
 
         }
 
-
-
-        private void BtnAdd_Click(object sender, EventArgs e)
-
+        private void drawChart()
         {
-            List<PointLoad> loadList = new List<PointLoad>();
-            PointLoad Load = new PointLoad(2, new Load(0, -150000));
-            loadList.Add(Load);
-            Assembler assembler = new Assembler(_TrussElementsList, loadList, _restrainedNodes, _nodesList.Count);
+
+            // Create a line series.
+            Series series1 = new Series("Series 1", ViewType.Line);
+
+            // Add points to it.
+
+            foreach (NodesInfo nodes in _nodesList)
+            {
+            series1.Points.Add(new SeriesPoint(nodes.Xcoord, nodes.Ycoord)); 
+
+            }
+
+            // Add the series to the chart.
+            chartDrawing.Series.Add(series1);
+            XYDiagram diagram = (XYDiagram)chartDrawing.Diagram;
+            diagram.AxisY.WholeRange.MinValue = -1;
+            diagram.AxisY.WholeRange.MaxValue = 5;
+
+            // Set the numerical argument scale types for the series,
+            // as it is qualitative, by default.
+            series1.ArgumentScaleType = ScaleType.Numerical;
+
+            // Access the view-type-specific options of the series.
+            ((LineSeriesView)series1.View).MarkerVisibility = DevExpress.Utils.DefaultBoolean.True;
+            ((LineSeriesView)series1.View).LineMarkerOptions.Kind = MarkerKind.Circle;
+
+            // Access the type-specific options of the diagram.
+            ((XYDiagram)chartDrawing.Diagram).EnableAxisXZooming = true;
+
+            // Hide the legend (if necessary).
+            chartDrawing.Legend.Visibility = DevExpress.Utils.DefaultBoolean.False;
+
+            this.Controls.Add(chartDrawing);
         }
 
-        #endregion
 
+        #endregion
     }
 }
