@@ -1,10 +1,12 @@
-﻿using DevExpress.XtraCharts;
-using SSH.TrussSolver;
+﻿using SSH.TrussSolver;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
 using System.Windows.Forms;
+using System.Drawing.Drawing2D;
+using DevExpress.XtraCharts;
+using System.Linq;
 
 namespace SSH
 {
@@ -30,7 +32,6 @@ namespace SSH
             EditElementsTableGridView();
             EditBCTableGridView();
             EditLoadTableGridView();
-
         }
 
         private void RefreshGraphics()
@@ -39,9 +40,9 @@ namespace SSH
             //for (int i = 0; i < 500; i+=100)
             //{
             //}
-                    _g.DrawLine(pen, new Point(0, 100), new Point(1000, 100));
-                    _g.DrawLine(pen, new Point(0, 0), new Point(1000, 200));
-                    _g.DrawLine(pen, new Point(0, 150), new Point(1000, 300));
+            _g.DrawLine(pen, new Point(0, 100), new Point(1000, 100));
+            _g.DrawLine(pen, new Point(0, 0), new Point(1000, 200));
+            _g.DrawLine(pen, new Point(0, 150), new Point(1000, 300));
         }
 
         private void prepareUI()
@@ -49,6 +50,7 @@ namespace SSH
             cmbSupportType.Items.Add(eRestrainedDir.X);
             cmbSupportType.Items.Add(eRestrainedDir.Y);
             cmbSupportType.Items.Add(eRestrainedDir.XY);
+            label13.Text = "<b><sub>" + "this is a test" + "</sub><b>";
             // Add a title to the chart (if necessary).
             //chElements.Titles.Add(new ChartTitle());
             //chElements.Titles[0].Text = "A Line Chart";
@@ -82,8 +84,8 @@ namespace SSH
             btnAddLoad.Click += BtnAddLoad_Click;
             btnAddRestrain.Click += BtnAddRestrain_Click;
             btnSolveTruss.Click += BtnSolveTruss_Click;
+            pictureBox1.Paint += canvasPictureBox_Paint;
         }
-
 
 
         private void BtnSolveTruss_Click(object sender, EventArgs e)
@@ -243,8 +245,8 @@ namespace SSH
             _dataTrussElementsTable = new DataTable();
             _dataTrussElementsTable.Columns.Add("Start NodeID", typeof(int));
             _dataTrussElementsTable.Columns.Add("End NodeID", typeof(int));
-            _dataTrussElementsTable.Columns.Add("Length", typeof(double)); 
-            _dataTrussElementsTable.Columns.Add("Angle", typeof(double)); 
+            _dataTrussElementsTable.Columns.Add("Length", typeof(double));
+            _dataTrussElementsTable.Columns.Add("Angle", typeof(double));
             gcTrussElements.DataSource = _dataTrussElementsTable;
         }
         private void SetBCTableColumns()
@@ -264,6 +266,9 @@ namespace SSH
             gcLoads.DataSource = _dataLoadTable;
         }
 
+
+
+
         #endregion
 
         #region Events
@@ -275,6 +280,7 @@ namespace SSH
             _nodesList.Add(new NodesInfo(Xcoord, Ycoord, ++_nodeCount));
             AddNodesDataRows();
             drawChart();
+            //CreateChart();
             //RefreshGraphics();
             //drawingControl.Refresh();
         }
@@ -291,15 +297,13 @@ namespace SSH
 
         private void drawChart()
         {
-
-            // Create a line series.
             Series series1 = new Series("Series 1", ViewType.Line);
 
             // Add points to it.
 
             foreach (NodesInfo nodes in _nodesList)
             {
-            series1.Points.Add(new SeriesPoint(nodes.Xcoord, nodes.Ycoord)); 
+                series1.Points.Add(new SeriesPoint(nodes.Xcoord, nodes.Ycoord));
 
             }
 
@@ -324,9 +328,114 @@ namespace SSH
             chartDrawing.Legend.Visibility = DevExpress.Utils.DefaultBoolean.False;
 
             this.Controls.Add(chartDrawing);
+            //double x1 = 0; // starting x-coordinate
+            //double y1 = 5; // starting y-coordinate
+            //double x2 = 10; // ending x-coordinate
+            //double y2 = 10; // ending y-coordinate
+            //int numPoints = 300; // number of points to interpolate
+
+            //double deltaX = (x2 - x1) / (numPoints );
+            //double deltaY = (y2 - y1) / (numPoints );
+
+            //double[] xVals = Enumerable.Range(0, numPoints).Select(i => x1 + i * deltaX).ToArray();
+            //double[] yVals = Enumerable.Range(0, numPoints).Select(i => y1 + i * deltaY).ToArray();
+
+
+            //// Create a line series.
+            //Series series = new Series("Series 1", ViewType.Point);
+            //Random rnd = new Random();
+            //int nPoints = 50;
+            //double[] x = new double[nPoints];
+            //double[] y = new double[nPoints];
+            //Color[] colors = { Color.Blue, Color.Cyan, Color.Lime, Color.Yellow, Color.Orange, Color.Red };
+            //double minValue = 0;
+            //double maxValue = 10;
+            //double segmentRatio = 1.0 / (colors.Length - 1);
+            //for (int i = 0; i < xVals.Length; i++)
+            //{
+            //    double value = xVals[i];
+            //    double ratio = (value - minValue) / (maxValue - minValue);
+
+            //    // Map the ratio to a segment and calculate the segment-specific ratio
+            //    int segmentIndex = (int)(ratio / segmentRatio);
+            //    double segmentRatioValue = (ratio - segmentIndex * segmentRatio) / segmentRatio;
+
+            //    // Interpolate between the colors of the current segment and the next segment
+            //    Color startColor = colors[segmentIndex];
+            //    Color endColor = colors[segmentIndex + 1];
+            //    int r = (int)(startColor.R + segmentRatioValue * (endColor.R - startColor.R));
+            //    int g = (int)(startColor.G + segmentRatioValue * (endColor.G - startColor.G));
+            //    int b = (int)(startColor.B + segmentRatioValue * (endColor.B - startColor.B));
+            //    Color interpolatedColor = Color.FromArgb(r, g, b);
+
+            //    // Assign the interpolated color to the data point
+            //    series.Points.Add(new SeriesPoint(xVals[i], yVals[i]) { Color= interpolatedColor });
+            //}
+
+            //// Add the series to the chart.
+            //chartDrawing.Series.Add(series);
+            //XYDiagram diagram = (XYDiagram)chartDrawing.Diagram;
+
+            //// Set the numerical argument scale types for the series,
+            //// as it is qualitative, by default.
+            //series.ArgumentScaleType = ScaleType.Numerical;
+
+            //// Access the type-specific options of the diagram.
+            //((XYDiagram)chartDrawing.Diagram).EnableAxisXZooming = true;
+
+            //// Hide the legend (if necessary).
+            //chartDrawing.Legend.Visibility = DevExpress.Utils.DefaultBoolean.False;
+
+            //this.Controls.Add(chartDrawing);
         }
 
+        private void canvasPictureBox_Paint(object sender, PaintEventArgs e)
+        {
+            // Define the min and max values and the number of pieces
+            int minVal = 0;
+            int maxVal = 100;
+            int pieces = 10;
+
+            // Define the width and height of the color bar
+            int colorBarWidth = 30;
+            int colorBarHeight = chartDrawing.Height;
+
+            // Create a new LinearGradientBrush to paint the color bar with jet colors
+            //Color[] colors = { Color.Blue, Color.Cyan, Color.Lime, Color.Yellow, Color.Orange, Color.Red };
+            Color[] colors = { Color.Red, Color.Orange, Color.Yellow, Color.Lime, Color.Cyan, Color.Blue };
+            float[] positions = { 0.0f, 0.2f, 0.4f, 0.6f, 0.8f, 1.0f };
+            LinearGradientBrush brush = new LinearGradientBrush(
+                new Point(colorBarWidth, 0), new Point(colorBarWidth, colorBarHeight),
+                Color.Red, Color.Blue);
+            ColorBlend blend = new ColorBlend();
+            blend.Colors = colors;
+            blend.Positions = positions;
+            brush.InterpolationColors = blend;
+
+            // Create a new Graphics object from the PictureBox's image
+            Graphics g = e.Graphics;
+
+            // Fill the rectangle for the color bar with the LinearGradientBrush
+            g.FillRectangle(brush, 0, 0, colorBarWidth, colorBarHeight);
+
+            // Draw the text for the minimum and maximum values on both sides of the color bar
+            Font font = new Font("Arial", 8);
+            Brush textBrush = new SolidBrush(Color.Black);
+            for (int i = 1; i <= pieces - 1; i++)
+            {
+                int val = (int)Math.Round((double)i * maxVal / pieces);
+                float y = colorBarHeight - (float)i * colorBarHeight / pieces - 6;
+                g.DrawString(val.ToString(), font, textBrush, colorBarWidth + 4, y - 3);
+                g.DrawLine(Pens.Black, colorBarWidth - 2, y + 4, colorBarWidth, y + 4);
+                //g.DrawLine(Pens.Black, 0, y + 4, colorBarWidth - 2, y + 4);
+            }
+            g.DrawString(minVal.ToString(), font, textBrush, colorBarWidth + 4, colorBarHeight - 12);
+            g.DrawString(maxVal.ToString(), font, textBrush, colorBarWidth + 4, 0);
+
+        }
 
         #endregion
+
+
     }
 }

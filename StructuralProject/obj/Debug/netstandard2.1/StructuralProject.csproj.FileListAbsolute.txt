@@ -8,3 +8,13 @@ D:\Hamid1\Hassanzada\SSHProgram\StructuralProject\obj\Debug\netstandard2.1\Struc
 D:\Hamid1\Hassanzada\SSHProgram\StructuralProject\obj\Debug\netstandard2.1\StructuralProject.csproj.CoreCompileInputs.cache
 D:\Hamid1\Hassanzada\SSHProgram\StructuralProject\obj\Debug\netstandard2.1\StructuralProject.dll
 D:\Hamid1\Hassanzada\SSHProgram\StructuralProject\obj\Debug\netstandard2.1\StructuralProject.pdb
+D:\Hamid1\Hassanzada\Personal\Projects\SSHProgram\StructuralProject\bin\Debug\netstandard2.1\StructuralProject.deps.json
+D:\Hamid1\Hassanzada\Personal\Projects\SSHProgram\StructuralProject\bin\Debug\netstandard2.1\StructuralProject.dll
+D:\Hamid1\Hassanzada\Personal\Projects\SSHProgram\StructuralProject\bin\Debug\netstandard2.1\StructuralProject.pdb
+D:\Hamid1\Hassanzada\Personal\Projects\SSHProgram\StructuralProject\obj\Debug\netstandard2.1\StructuralProject.csproj.AssemblyReference.cache
+D:\Hamid1\Hassanzada\Personal\Projects\SSHProgram\StructuralProject\obj\Debug\netstandard2.1\StructuralProject.GeneratedMSBuildEditorConfig.editorconfig
+D:\Hamid1\Hassanzada\Personal\Projects\SSHProgram\StructuralProject\obj\Debug\netstandard2.1\StructuralProject.AssemblyInfoInputs.cache
+D:\Hamid1\Hassanzada\Personal\Projects\SSHProgram\StructuralProject\obj\Debug\netstandard2.1\StructuralProject.AssemblyInfo.cs
+D:\Hamid1\Hassanzada\Personal\Projects\SSHProgram\StructuralProject\obj\Debug\netstandard2.1\StructuralProject.csproj.CoreCompileInputs.cache
+D:\Hamid1\Hassanzada\Personal\Projects\SSHProgram\StructuralProject\obj\Debug\netstandard2.1\StructuralProject.dll
+D:\Hamid1\Hassanzada\Personal\Projects\SSHProgram\StructuralProject\obj\Debug\netstandard2.1\StructuralProject.pdb

@@ -80,6 +80,7 @@ namespace SSH
             this.N = new System.Windows.Forms.Label();
             this.btnSolveTruss = new System.Windows.Forms.Button();
             this.chartDrawing = new DevExpress.XtraCharts.ChartControl();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.ribbonControl1)).BeginInit();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gcTrussElements)).BeginInit();
@@ -99,6 +100,7 @@ namespace SSH
             ((System.ComponentModel.ISupportInitialize)(this.gvBoundaryConditions)).BeginInit();
             this.groupBox9.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chartDrawing)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // ribbonControl1
@@ -114,7 +116,7 @@ namespace SSH
             this.ribbonControl1.Pages.AddRange(new DevExpress.XtraBars.Ribbon.RibbonPage[] {
             this.ribPgTrussSolver,
             this.ribbonPage2});
-            this.ribbonControl1.Size = new System.Drawing.Size(1237, 158);
+            this.ribbonControl1.Size = new System.Drawing.Size(1309, 158);
             // 
             // barButtonItem1
             // 
@@ -242,7 +244,7 @@ namespace SSH
             this.gcTrussElements.MainView = this.gvTrussElements;
             this.gcTrussElements.MenuManager = this.ribbonControl1;
             this.gcTrussElements.Name = "gcTrussElements";
-            this.gcTrussElements.Size = new System.Drawing.Size(628, 62);
+            this.gcTrussElements.Size = new System.Drawing.Size(628, 154);
             this.gcTrussElements.TabIndex = 17;
             this.gcTrussElements.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.gvTrussElements});
@@ -262,7 +264,7 @@ namespace SSH
             this.groupBox3.Controls.Add(this.groupBox1);
             this.groupBox3.Location = new System.Drawing.Point(0, 475);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(714, 210);
+            this.groupBox3.Size = new System.Drawing.Size(714, 302);
             this.groupBox3.TabIndex = 18;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Elements Info";
@@ -290,7 +292,7 @@ namespace SSH
             this.groupBox4.Controls.Add(this.groupBox6);
             this.groupBox4.Location = new System.Drawing.Point(12, 164);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(388, 305);
+            this.groupBox4.Size = new System.Drawing.Size(460, 305);
             this.groupBox4.TabIndex = 19;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Nodes Info";
@@ -376,7 +378,7 @@ namespace SSH
             this.groupBox5.Controls.Add(this.groupBox7);
             this.groupBox5.Location = new System.Drawing.Point(406, 164);
             this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(388, 305);
+            this.groupBox5.Size = new System.Drawing.Size(460, 305);
             this.groupBox5.TabIndex = 20;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Loading Info";
@@ -478,7 +480,7 @@ namespace SSH
             this.groupBox8.Controls.Add(this.groupBox9);
             this.groupBox8.Location = new System.Drawing.Point(800, 164);
             this.groupBox8.Name = "groupBox8";
-            this.groupBox8.Size = new System.Drawing.Size(388, 305);
+            this.groupBox8.Size = new System.Drawing.Size(460, 305);
             this.groupBox8.TabIndex = 23;
             this.groupBox8.TabStop = false;
             this.groupBox8.Text = "Boundary Conditions Info";
@@ -560,7 +562,7 @@ namespace SSH
             | System.Windows.Forms.AnchorStyles.Right)));
             this.btnSolveTruss.Location = new System.Drawing.Point(943, 493);
             this.btnSolveTruss.Name = "btnSolveTruss";
-            this.btnSolveTruss.Size = new System.Drawing.Size(86, 49);
+            this.btnSolveTruss.Size = new System.Drawing.Size(158, 49);
             this.btnSolveTruss.TabIndex = 19;
             this.btnSolveTruss.Text = "Solve Truss";
             this.btnSolveTruss.UseVisualStyleBackColor = true;
@@ -571,17 +573,28 @@ namespace SSH
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.chartDrawing.Legend.Name = "Default Legend";
-            this.chartDrawing.Location = new System.Drawing.Point(757, 560);
+            this.chartDrawing.Location = new System.Drawing.Point(721, 560);
             this.chartDrawing.Name = "chartDrawing";
             this.chartDrawing.SeriesSerializable = new DevExpress.XtraCharts.Series[0];
-            this.chartDrawing.Size = new System.Drawing.Size(467, 124);
+            this.chartDrawing.Size = new System.Drawing.Size(482, 216);
             this.chartDrawing.TabIndex = 30;
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.pictureBox1.Location = new System.Drawing.Point(1209, 561);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(51, 216);
+            this.pictureBox1.TabIndex = 34;
+            this.pictureBox1.TabStop = false;
             // 
             // SSHMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1237, 697);
+            this.ClientSize = new System.Drawing.Size(1309, 789);
+            this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.chartDrawing);
             this.Controls.Add(this.btnSolveTruss);
             this.Controls.Add(this.groupBox8);
@@ -616,6 +629,7 @@ namespace SSH
             this.groupBox9.ResumeLayout(false);
             this.groupBox9.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chartDrawing)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -674,6 +688,7 @@ namespace SSH
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Button btnSolveTruss;
         private DevExpress.XtraCharts.ChartControl chartDrawing;
+        private System.Windows.Forms.PictureBox pictureBox1;
     }
 }
 
