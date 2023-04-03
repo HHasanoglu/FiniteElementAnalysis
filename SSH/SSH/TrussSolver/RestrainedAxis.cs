@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace SSH.TrussSolver
 {
-    public enum eRestrainedDir
+    public enum eRestraintCondition
     {
-        X,
-        Y,
-        XY
+        free,
+        restrained
     }
 }

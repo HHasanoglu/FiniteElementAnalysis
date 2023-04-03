@@ -9,14 +9,11 @@ namespace SSH.TrussSolver
     {
         #region Ctor
 
-        public TrussElement(NodesInfo NodeI, NodesInfo NodeJ, double E, double A)
+        public TrussElement(string memberLabel,NodesInfo NodeI, NodesInfo NodeJ, double E, double A)
         {
-            _startNodeXcoord = NodeI.Xcoord;
-            _startNodeYcoord = NodeI.Ycoord;
-            _endNodeXcoord = NodeJ.Xcoord;
-            _endNodeYcoord = NodeJ.Ycoord;
-            _startNodeID = NodeI.ID;
-            _endNodeID = NodeJ.ID;
+            _memberlabel = memberLabel;
+            _nodeI = NodeI;
+            _nodeJ = NodeJ;
             _E = E;
             _A = A;
             EvaluateProperties();
@@ -28,12 +25,9 @@ namespace SSH.TrussSolver
 
         #region Private Fields
 
-        private double _startNodeXcoord;
-        private double _startNodeYcoord;
-        private double _endNodeXcoord;
-        private double _endNodeYcoord;
-        private int _startNodeID;
-        private int _endNodeID;
+        private string _memberlabel;
+        private NodesInfo _nodeI;
+        private NodesInfo _nodeJ;
         private double _A;
         private double _E;
         private double _L;
@@ -67,14 +61,8 @@ namespace SSH.TrussSolver
 
         #region Public Fiels
 
-        public double StartNodeXcoord { get => _startNodeXcoord; set => _startNodeXcoord = value; }
-        public double StartNodeYcoord { get => _startNodeYcoord; set => _startNodeYcoord = value; }
-        public double EndNodeXcoord { get => _endNodeXcoord; set => _endNodeXcoord = value; }
-        public double EndNodeYcoord { get => _endNodeYcoord; set => _endNodeYcoord = value; }
-        public int  StartNodeID { get => _startNodeID; set => _startNodeID = value; }
-        public int EndNodeID { get => _endNodeID; set => _endNodeID = value; }
-        public Matrix<double> kl { get => _kl; set => _kl = value; }
-        public Matrix<double> Kg { get => _kg; set => _kg = value; }
+        public Matrix<double> klocal { get => _kl; set => _kl = value; }
+        public Matrix<double> Kglobal { get => _kg; set => _kg = value; }
         public Matrix<double> T { get => _T; set => _T = value; }
         public double IEndDisplacement { get => _IEndDisplacement; set => _IEndDisplacement = value; }
         public double JEndDisplacement { get => _JEndDisplacement; set => _JEndDisplacement = value; }
@@ -84,6 +72,9 @@ namespace SSH.TrussSolver
         public double E { get => _E; set => _E = value; }
         public double L { get => _L; set => _L = value; }
         public double Theta { get => 180 / Math.PI * _theta; set => _theta = value; }
+        public NodesInfo NodeI { get => _nodeI; set => _nodeI = value; }
+        public NodesInfo NodeJ { get => _nodeJ; set => _nodeJ = value; }
+        public string Memberlabel { get => _memberlabel; set => _memberlabel = value; }
 
         #endregion
 
@@ -91,8 +82,8 @@ namespace SSH.TrussSolver
         #region Private Methods
         private void EvaluateProperties()
         {
-            _L = Math.Sqrt(Math.Pow(_endNodeXcoord - _startNodeXcoord, 2) + Math.Pow(_endNodeYcoord - _startNodeYcoord, 2));
-            _theta = Math.Atan2((_endNodeYcoord - _startNodeYcoord), (_endNodeXcoord - _startNodeXcoord));
+            _L = Math.Sqrt(Math.Pow(_nodeJ.Xcoord-_nodeI.Xcoord, 2) + Math.Pow(_nodeJ.Ycoord - _nodeI.Ycoord, 2));
+            _theta = Math.Atan2((_nodeJ.Ycoord - _nodeI.Ycoord), (_nodeJ.Xcoord  - _nodeI.Xcoord));
         }
 
         private void evaluateTransformationMatrix()

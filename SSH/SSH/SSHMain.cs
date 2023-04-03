@@ -23,6 +23,9 @@ namespace SSH
             _TrussElementsList = new List<TrussElement>();
             _restrainedNodes = new List<RestrainedNode>();
             _nodalForces = new List<PointLoad>();
+
+            CreateExample1();
+
             prepareUI();
             SetNodeTableColumns();
             SetElementsTableColumns();
@@ -32,8 +35,62 @@ namespace SSH
             EditElementsTableGridView();
             EditBCTableGridView();
             EditLoadTableGridView();
+            drawChart();
         }
 
+        private void CreateExample1()
+        {
+            AddNode(1, 0, 0);
+            AddNode(2, 5, 8.66);
+            AddNode(3, 15, 8.66);
+            AddNode(4, 20, 0);
+            AddNode(5, 10, 0);
+            AddNode(6, 10, -5);
+            var E = 200 * Math.Pow(10, 9);
+            var A = 5000;
+            AddMember("A", 1, 2, E, A);
+            AddMember("B", 2, 3, E, A);
+            AddMember("C", 3, 4, E, A);
+            AddMember("D", 4, 5, E, A);
+            AddMember("E", 1, 5, E, A);
+            AddMember("F", 2, 5, E, A);
+            AddMember("G", 3, 5, E, A);
+            AddMember("H", 5, 6, E, A);
+            AddRestrainedNode(4, true, true);
+            AddRestrainedNode(6, true, true);
+            AddLoad(1, 0, -200000);
+        }
+
+        private void AddLoad(int nodeId, double fx, double fy)
+        {
+            var node = GetNodeById(nodeId);
+            node.Fx = fx;
+            node.Fy = fy;
+
+        }
+
+        private void AddRestrainedNode(int nodeId, bool isXRestrained, bool isYRestrained)
+        {
+            var node = GetNodeById(nodeId);
+            node.XDirection = isXRestrained ? eRestraintCondition.restrained : eRestraintCondition.free;
+            node.YDirection = isYRestrained ? eRestraintCondition.restrained : eRestraintCondition.free;
+        }
+
+        private NodesInfo GetNodeById(int NodeId)
+        {
+            return _nodesList.FirstOrDefault(x => x.ID == NodeId);
+        }
+
+        private void AddNode(int ID, double X, double Y)
+        {
+            _nodesList.Add(new NodesInfo(ID, X, Y));
+        }
+        public void AddMember(string memberLabel, int nodeI, int nodeJ, double Area, double E)
+        {
+            var nodei = GetNodeById(nodeI);
+            var nodej = GetNodeById(nodeJ);
+            _TrussElementsList.Add(new TrussElement(memberLabel, nodei, nodej, E, Area));
+        }
         private void RefreshGraphics()
         {
             Pen pen = new Pen(new SolidBrush(Color.SkyBlue));
@@ -47,10 +104,9 @@ namespace SSH
 
         private void prepareUI()
         {
-            cmbSupportType.Items.Add(eRestrainedDir.X);
-            cmbSupportType.Items.Add(eRestrainedDir.Y);
-            cmbSupportType.Items.Add(eRestrainedDir.XY);
-            label13.Text = "<b><sub>" + "this is a test" + "</sub><b>";
+            //cmbSupportType.Items.Add(eRestraintCondition.X);
+            //cmbSupportType.Items.Add(eRestraintCondition.Y);
+            //cmbSupportType.Items.Add(eRestraintCondition.XY);
             // Add a title to the chart (if necessary).
             //chElements.Titles.Add(new ChartTitle());
             //chElements.Titles[0].Text = "A Line Chart";
@@ -95,7 +151,7 @@ namespace SSH
 
         private void BtnAddRestrain_Click(object sender, EventArgs e)
         {
-            eRestrainedDir restraniedType = (eRestrainedDir)cmbSupportType.SelectedIndex;
+            eRestraintCondition restraniedType = (eRestraintCondition)cmbSupportType.SelectedIndex;
             int Id = Convert.ToInt32(txtBCNodeId.Text);
             _restrainedNodes.Add(new RestrainedNode(Id, restraniedType));
             AddRestrainedDataRows();
@@ -105,12 +161,12 @@ namespace SSH
         {
             var startnodeId = Convert.ToInt32(txtNodeI.Text);
             var EndnodeId = Convert.ToInt32(txtNodeJ.Text);
-            NodesInfo startNode = _nodesList.Find(obj => obj.ID == startnodeId);
-            NodesInfo endNode = _nodesList.Find(obj => obj.ID == EndnodeId);
-            var E = Convert.ToDouble(txtStiffness.Text);
-            var A = Convert.ToDouble(txtSectionArea.Text);
+            //NodesInfo startNode = _nodesList.Find(obj => obj.ID == startnodeId);
+            //NodesInfo endNode = _nodesList.Find(obj => obj.ID == EndnodeId);
+            //var E = Convert.ToDouble(txtStiffness.Text);
+            //var A = Convert.ToDouble(txtSectionArea.Text);
 
-            _TrussElementsList.Add(new TrussElement(startNode, endNode, E, A));
+            //_TrussElementsList.Add(new TrussElement(startNode, endNode, E, A));
             AddElementsDataRows();
         }
 
@@ -197,8 +253,9 @@ namespace SSH
             foreach (TrussElement elemnent in _TrussElementsList)
             {
                 row = _dataTrussElementsTable.NewRow();
-                row[0] = elemnent.StartNodeID;
-                row[1] = elemnent.EndNodeID;
+                row[0] = elemnent.NodeI.ID;
+                row[1] = elemnent.NodeJ.ID;
+                row[1] = elemnent.NodeJ.ID;
                 row[2] = elemnent.L;
                 row[3] = elemnent.Theta;
                 _dataTrussElementsTable.Rows.Add(row);
@@ -253,7 +310,7 @@ namespace SSH
         {
             _dataBoundaryConditionsTable = new DataTable();
             _dataBoundaryConditionsTable.Columns.Add(" Node ID", typeof(int));
-            _dataBoundaryConditionsTable.Columns.Add("Restrained Direction", typeof(eRestrainedDir));
+            _dataBoundaryConditionsTable.Columns.Add("Restrained Direction", typeof(eRestraintCondition));
             gcBoundaryConditions.DataSource = _dataBoundaryConditionsTable;
         }
 
@@ -277,7 +334,8 @@ namespace SSH
         {
             var Xcoord = Convert.ToDouble(txtNodeX.Text);
             var Ycoord = Convert.ToDouble(txtNodeY.Text);
-            _nodesList.Add(new NodesInfo(Xcoord, Ycoord, ++_nodeCount));
+
+            //_nodesList.Add(new NodesInfo(Xcoord, Ycoord, ++_nodeCount));
             AddNodesDataRows();
             drawChart();
             //CreateChart();
@@ -297,29 +355,59 @@ namespace SSH
 
         private void drawChart()
         {
-            Series series1 = new Series("Series 1", ViewType.Line);
+            // Add data points to the series
+            foreach (var element in _TrussElementsList)
+            {
+                Series series = new Series(element.Memberlabel, ViewType.Line);
+                series.Points.Add(new SeriesPoint(element.NodeI.Xcoord, element.NodeI.Ycoord));
+                series.Points.Add(new SeriesPoint(element.NodeJ.Xcoord, element.NodeJ.Ycoord));
+                LineSeriesView lineView = (LineSeriesView)series.View;
+                lineView.MarkerVisibility = DevExpress.Utils.DefaultBoolean.False;
+                //lineView.LineMarkerOptions.Size = 1;
+                //lineView.LineMarkerOptions.Kind = MarkerKind.Circle;
+                lineView.LineStyle.Thickness = 5;
+                lineView.LineMarkerOptions.BorderColor = Color.Black;
+                lineView.LineMarkerOptions.BorderVisible = true;
+                chartDrawing.Series.Add(series);
+                series.View.Color = Color.LightGray;
+            }
+
 
             // Add points to it.
 
             foreach (NodesInfo nodes in _nodesList)
             {
-                series1.Points.Add(new SeriesPoint(nodes.Xcoord, nodes.Ycoord));
+                Series series1 = new Series("Nodes", ViewType.Point);
+                PointSeriesView seriesView = (PointSeriesView)series1.View;
+                if (nodes.XDirection == eRestraintCondition.free)
+                {
+                    seriesView.PointMarkerOptions.Kind = MarkerKind.Circle;
+                    seriesView.Color = Color.Blue;
+                    series1.Points.Add(new SeriesPoint(nodes.Xcoord, nodes.Ycoord));
+                }
+                else
+                {
+                    seriesView.Color = Color.Red;
+                    seriesView.PointMarkerOptions.Kind = MarkerKind.Triangle;
+                    series1.Points.Add(new SeriesPoint(nodes.Xcoord, nodes.Ycoord - 0.2));
 
+                    seriesView.PointMarkerOptions.Size = 15;
+                }
+                chartDrawing.Series.Add(series1);
             }
 
             // Add the series to the chart.
-            chartDrawing.Series.Add(series1);
             XYDiagram diagram = (XYDiagram)chartDrawing.Diagram;
-            diagram.AxisY.WholeRange.MinValue = -1;
-            diagram.AxisY.WholeRange.MaxValue = 5;
+            //diagram.AxisY.WholeRange.MinValue = -1;
+            //diagram.AxisY.WholeRange.MaxValue = 5;
 
             // Set the numerical argument scale types for the series,
             // as it is qualitative, by default.
-            series1.ArgumentScaleType = ScaleType.Numerical;
+            //series1.ArgumentScaleType = ScaleType.Numerical;
 
             // Access the view-type-specific options of the series.
-            ((LineSeriesView)series1.View).MarkerVisibility = DevExpress.Utils.DefaultBoolean.True;
-            ((LineSeriesView)series1.View).LineMarkerOptions.Kind = MarkerKind.Circle;
+            //((LineSeriesView)series1.View).MarkerVisibility = DevExpress.Utils.DefaultBoolean.True;
+            //((LineSeriesView)series1.View).LineMarkerOptions.Kind = MarkerKind.Circle;
 
             // Access the type-specific options of the diagram.
             ((XYDiagram)chartDrawing.Diagram).EnableAxisXZooming = true;
@@ -327,22 +415,104 @@ namespace SSH
             // Hide the legend (if necessary).
             chartDrawing.Legend.Visibility = DevExpress.Utils.DefaultBoolean.False;
 
-            this.Controls.Add(chartDrawing);
-            //double x1 = 0; // starting x-coordinate
-            //double y1 = 5; // starting y-coordinate
-            //double x2 = 10; // ending x-coordinate
-            //double y2 = 10; // ending y-coordinate
-            //int numPoints = 300; // number of points to interpolate
 
-            //double deltaX = (x2 - x1) / (numPoints );
-            //double deltaY = (y2 - y1) / (numPoints );
+
+
+            //double x1 = 5; // starting x-coordinate
+            //double y1 = 8.5; // starting y-coordinate
+            //double x2 = 15; // ending x-coordinate
+            //double y2 = 8.5; // ending y-coordinate
+            //int numPoints = 200; // number of points to interpolate
+
+            //double deltaX = (x2 - x1) / (numPoints);
+            //double deltaY = (y2 - y1) / (numPoints);
 
             //double[] xVals = Enumerable.Range(0, numPoints).Select(i => x1 + i * deltaX).ToArray();
             //double[] yVals = Enumerable.Range(0, numPoints).Select(i => y1 + i * deltaY).ToArray();
 
 
             //// Create a line series.
-            //Series series = new Series("Series 1", ViewType.Point);
+            //Series series2 = new Series("Series 1", ViewType.Point);
+            //Random rnd = new Random();
+            //int nPoints = 50;
+            //double[] x = new double[nPoints];
+            //double[] y = new double[nPoints];
+            //Color[] colors = { Color.Blue, Color.Cyan, Color.Lime, Color.Yellow, Color.Orange, Color.Red };
+            //double minValue = 0;
+            //double maxValue = 10;
+            //double segmentRatio = 1.0 / (colors.Length - 1);
+            //for (int i = 0; i < xVals.Length; i++)
+            //{
+            //    double value = xVals[i];
+            //    double ratio = (value - minValue) / (maxValue - minValue);
+
+            //    // Map the ratio to a segment and calculate the segment-specific ratio
+            //    int segmentIndex = (int)(ratio / segmentRatio);
+
+            //    if (ratio >= 1.0)
+            //    {
+            //        // Handle the case where the ratio is greater than or equal to 1.0
+            //        segmentIndex = colors.Length - 2;
+            //    }
+
+            //    double segmentRatioValue = (ratio - segmentIndex * segmentRatio) / segmentRatio;
+
+            //    // Interpolate between the colors of the current segment and the next segment
+            //    Color startColor = colors[segmentIndex];
+            //    Color endColor = colors[segmentIndex + 1];
+            //    if (startColor.G > endColor.G)
+            //    {
+            //        startColor = colors[segmentIndex + 1];
+            //        endColor = colors[segmentIndex];
+            //    }
+            //    int r = (int)(startColor.R + segmentRatioValue * (endColor.R - startColor.R));
+            //    int g = (int)(startColor.G + segmentRatioValue * (endColor.G - startColor.G));
+            //    int b = (int)(startColor.B + segmentRatioValue * (endColor.B - startColor.B));
+            //    if (g < 0)
+            //    {
+            //        g = 0;
+            //    }
+            //    else if (g > 255)
+            //    {
+            //        g = 255;
+            //    }
+            //    Color interpolatedColor = Color.FromArgb(r, g, b);
+
+            //    // Assign the interpolated color to the data point
+            //    series2.Points.Add(new SeriesPoint(xVals[i], yVals[i]) { Color = interpolatedColor });
+
+            //}
+
+            //// Add the series to the chart.
+            //chartDrawing.Series.Add(series2);
+            //diagram = (XYDiagram)chartDrawing.Diagram;
+
+            //// Set the numerical argument scale types for the series,
+            //// as it is qualitative, by default.
+            //series2.ArgumentScaleType = ScaleType.Numerical;
+
+            //// Access the type-specific options of the diagram.
+            //((XYDiagram)chartDrawing.Diagram).EnableAxisXZooming = true;
+
+            //// Hide the legend (if necessary).
+            //chartDrawing.Legend.Visibility = DevExpress.Utils.DefaultBoolean.False;
+
+
+            //double x1 = 5; // starting x-coordinate
+            //double y1 = 8.5; // starting y-coordinate
+            //double x2 = 15; // ending x-coordinate
+            //double y2 = 8.5; // ending y-coordinate
+            //int numPoints = 300; // number of points to interpolate
+
+            //double deltaX = (x2 - x1) / (numPoints);
+            //double deltaY = (y2 - y1) / (numPoints);
+
+            //double[] xVals = Enumerable.Range(0, numPoints).Select(i => x1 + i * deltaX).ToArray();
+            //double[] yVals = Enumerable.Range(0, numPoints).Select(i => y1 + i * deltaY).ToArray();
+
+
+            //// Create a line series.
+            //Series series2 = new Series("Series 1", ViewType.Point);
             //Random rnd = new Random();
             //int nPoints = 50;
             //double[] x = new double[nPoints];
@@ -369,16 +539,16 @@ namespace SSH
             //    Color interpolatedColor = Color.FromArgb(r, g, b);
 
             //    // Assign the interpolated color to the data point
-            //    series.Points.Add(new SeriesPoint(xVals[i], yVals[i]) { Color= interpolatedColor });
+            //    series2.Points.Add(new SeriesPoint(xVals[i], yVals[i]) { Color = interpolatedColor });
             //}
 
             //// Add the series to the chart.
-            //chartDrawing.Series.Add(series);
-            //XYDiagram diagram = (XYDiagram)chartDrawing.Diagram;
+            //chartDrawing.Series.Add(series2);
+            //diagram = (XYDiagram)chartDrawing.Diagram;
 
             //// Set the numerical argument scale types for the series,
             //// as it is qualitative, by default.
-            //series.ArgumentScaleType = ScaleType.Numerical;
+            //series2.ArgumentScaleType = ScaleType.Numerical;
 
             //// Access the type-specific options of the diagram.
             //((XYDiagram)chartDrawing.Diagram).EnableAxisXZooming = true;
