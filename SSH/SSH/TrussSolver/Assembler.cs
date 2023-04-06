@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using MathNet.Numerics.LinearAlgebra;
 
@@ -7,242 +8,236 @@ namespace SSH.TrussSolver
 {
     public class Assembler
     {
-        //public Assembler(List<TrussElement> stiffnessList, int TotalNodes, List<RestrainedNodes> restrainedNodes)
-        //{
-        //    _StiffnessList = stiffnessList;
-        //    _TotalNodes = TotalNodes;
-        //    _restrainedNodes = restrainedNodes;
-        //}
-        //_Ndof = _TotalNodes * _dofPerNode;
-        //evaluateTotalRestrainedNodes();
-
-        private void evaluateTotalRestrainedNodes()
+        #region Ctor
+        public Assembler(List<TrussElement> ElementList, List<Node> Nodes)
         {
-            //foreach (var node in _restrainedNodes)
-            //{
-            //    if (node.Direction == eRestraintCondition.XY)
-            //    {
-            //        _nResTotal += 2;
-            //    }
-            //    else
-            //    {
-            //        _nResTotal += 1;
-            //    }
-
-            //}
+            var KGlobal=getAssembleMatrix(Nodes, ElementList);
+            var KGReduced= getAssembledReducedMatrix(Nodes,ElementList);
+            var text = showMatrixRepresention(KGReduced);
+            var forceReduced=GetReducedForceVector(Nodes);
+            var displacement=GetDisplacementVector(KGReduced,forceReduced);
+            var TotalDisplacementVector=GetTotalDisplacement(Nodes, displacement);
+            var reactions=GetReactions(KGlobal, TotalDisplacementVector);
+            SetMemberForces(ElementList,TotalDisplacementVector);
         }
+
+        #endregion
+
+        #region Private Regions
 
         private const int _dofPerNode = 2;
-        private List<TrussElement> _ElementsList;
-        private List<PointLoad> _loadList;
-        private int _TotalNodes;
-        private List<RestrainedNode> _restrainedNodes;
-        private int _nResTotal = 0;
         private int _Ndof;
-        private Matrix<double> _KG;
-        private Matrix<double> _KGReduced;
-        private Matrix<double> _force;
-        private Matrix<double> _forceReduced;
-        private Matrix<double> _displacements;
-        private Matrix<double> _displacementsTotal;
-        private Matrix<double> _reactions;
 
-        public Assembler(List<TrussElement> stiffnessList, List<PointLoad> loadList, List<RestrainedNode> restrainedNodes, int totalNodes)
+        #endregion
+
+        #region private Methods
+
+        #endregion
+        private string showMatrixRepresention(Matrix<double> matrix)
         {
-            _ElementsList = stiffnessList;
-            _loadList = loadList;
-            _TotalNodes = totalNodes;
-            _restrainedNodes = restrainedNodes;
-            _Ndof = _TotalNodes * _dofPerNode;
-            evaluateTotalRestrainedNodes();
-            getAssembleMatrix();
-            getAssembledReducedMatrix();
-            GetReducedForceVector();
-            GetDisplacementVector();
-            GetTotalDisplacement();
-            GetReactions();
-            getMemberForces();
+            var text = new StringBuilder();
+            for (int i = 0; i < matrix.RowCount; i++)
+            {
+                for (int j = 0; j < matrix.ColumnCount; j++)
+                {
+                    text.Append(matrix[i, j]);
+                    text.Append("\t");
+                }
+                text.AppendLine();
+            }
+            return text.ToString();
         }
 
-        private void getMemberForces()
+        private void SetMemberForces(List<TrussElement> ElementsList, Matrix<double> TotalDisplacementVector)
         {
             var Displacement = Matrix<double>.Build.Dense(4, 1);
 
-            foreach (TrussElement element in _ElementsList)
+            foreach (TrussElement element in ElementsList)
             {
-
-                Displacement[0,0]=_displacementsTotal[2 * element.NodeI.ID - 2, 0];
-                Displacement[1,0]=_displacementsTotal[2 * element.NodeI.ID - 1, 0];
-                Displacement[2, 0] = _displacementsTotal[2 * element.NodeJ.ID - 2, 0];
-                Displacement[3, 0] = _displacementsTotal[2 * element.NodeJ.ID  - 1, 0];
+                Displacement[0, 0] = TotalDisplacementVector[2 * element.NodeI.ID - 2, 0];
+                Displacement[1, 0] = TotalDisplacementVector[2 * element.NodeI.ID - 1, 0];
+                Displacement[2, 0] = TotalDisplacementVector[2 * element.NodeJ.ID - 2, 0];
+                Displacement[3, 0] = TotalDisplacementVector[2 * element.NodeJ.ID - 1, 0];
 
                 var displacementLocal = element.T * Displacement;
                 element.IEndDisplacement = displacementLocal[0, 0];
                 element.JEndDisplacement = displacementLocal[1, 0];
-                element.IEndForce = element.E*element.A/element.L*(element.JEndDisplacement- element.IEndDisplacement);
+                element.IEndForce = element.E * element.A / element.L * (element.JEndDisplacement - element.IEndDisplacement);
                 element.JEndForce = element.E * element.A / element.L * (element.IEndDisplacement - element.JEndDisplacement);
 
             }
         }
 
-        private void GetReactions()
+        private Matrix<double> GetReactions(Matrix<double> KG, Matrix<double> displacementsTotal)
         {
-            _reactions= _KG * _displacementsTotal;
+            return KG * displacementsTotal;
         }
 
-        private void getAssembleMatrix()
+        private Matrix<double> getAssembleMatrix(List<Node> Nodes, List<TrussElement> ElementsList)
         {
-            _KG = Matrix<double>.Build.Dense(_Ndof, _Ndof);
+            var Ndof = Nodes.Count * Nodes[0].DofPerNode;
+            var KG = Matrix<double>.Build.Dense(Ndof, Ndof);
+            var arr2d= GetMappingArrayPrimary(Nodes);
+            var G = new int[2 * _dofPerNode];
+
             //var sorted = StiffnessMatrixList.Ordw(x => x.StartNode);
-            foreach (TrussElement element in _ElementsList)
+            foreach (TrussElement element in ElementsList)
             {
                 Matrix<double> Kg = element.Kglobal;
-                var st1 = 2 * element.NodeI.ID - 2;
-                var st2 = 2 * element.NodeI.ID - 1;
-                var end1 = 2 * element.NodeJ.ID - 2;
-                var end2 = 2 * element.NodeJ.ID - 1;
-                var s = 0;
-                for (int i = st1; i <= end2; i++)
+                for (int i = 0; i < _dofPerNode; i++)
                 {
-                    var en = 0;
-                    for (int j = st1; j <= end2; j++)
+                    G[i] = arr2d[element.NodeI.ID - 1, i];
+                    G[i + 2] = arr2d[element.NodeJ.ID - 1, i];
+                }
+
+                for (int i = 0; i <= 3; i++)
+                {
+                    var P = G[i];
+                    for (int j = 0; j <= 3; j++)
                     {
-                        _KG[i, j] = _KG[i, j] + Kg[s, en];
-                        en += 1;
+                        var Q = G[j];
+                        KG[P, Q] = KG[P, Q] + Kg[i, j];
                     }
-                    s += 1;
+                }
+            }
+            return KG;
+        }
+
+        private Matrix<double> getAssembledReducedMatrix(List<Node> Nodes,List<TrussElement> ElementsList)
+        {
+            GetMappingArray(out int[,] arr2d, out int count, Nodes);
+
+            int[] G = new int[2 * _dofPerNode];
+
+            var KGReduced = Matrix<double>.Build.Dense(count, count);
+            foreach (TrussElement element in ElementsList)
+            {
+                for (int i = 0; i < _dofPerNode; i++)
+                {
+                    G[i] = arr2d[element.NodeI.ID - 1, i];
+                    G[i + 2] = arr2d[element.NodeJ.ID - 1, i];
+                }
+
+                Matrix<double> Kg = element.Kglobal;
+                for (int i = 0; i < 4; i++)
+                {
+                    for (int j = 0; j < 4; j++)
+                    {
+                        var P = G[i];
+                        var Q = G[j];
+                        if (P != -1 && Q != -1)
+                        {
+                            KGReduced[P, Q] = KGReduced[P, Q] + Kg[i, j];
+                        }
+                    }
+                }
+            }
+            return KGReduced;
+        }
+
+
+        private Matrix<double> GetReducedForceVector(List<Node> Nodes)
+        {
+            GetMappingArray(out int[,] arr2d, out int count, Nodes);
+
+            var  forceReduced = Matrix<double>.Build.Dense(count, 1);
+
+            foreach (TrussNode node in Nodes)
+            {
+                for (int i = 0; i < 2; i++)
+                {
+                    var Q = arr2d[node.ID - 1, i];
+                    if (Q != -1)
+                    {
+                        switch (i)
+                        {
+                            case 0:
+
+                                forceReduced[Q, 0] = node.Fx;
+                                break;
+                            case 1:
+
+                                forceReduced[Q, 0] = node.Fy;
+                                break;
+                        }
+                    }
+                }
+            }
+            return forceReduced;
+        }
+
+        private void GetMappingArray(out int[,] arr2d, out int count, List<Node> Nodes)
+        {
+
+            arr2d = new int[Nodes.Count, Nodes[0].DofPerNode];
+            foreach (TrussNode node in Nodes)
+            {
+                var rowID = node.ID;
+                if (node.XDirection == eRestraintCondition.restrained) arr2d[rowID - 1, 0] = -1;
+                if (node.YDirection == eRestraintCondition.restrained) arr2d[rowID - 1, 1] = -1;
+            }
+            count = 0;
+            for (int i = 0; i < Nodes.Count; i++)
+            {
+                for (int j = 0; j < _dofPerNode; j++)
+                {
+                    if (arr2d[i, j] == 0)
+                    {
+                        arr2d[i, j] = count;
+                        count += 1;
+                    }
                 }
             }
         }
 
-        private void getAssembledReducedMatrix()
+        private int[,] GetMappingArrayPrimary(List<Node> Nodes)
         {
-            //int[,] arr2d=[0,0];
-            //int count=0;
-            ////GetMappingArray(out arr2d, out count);
 
-            //int[] G = new int[2 * _dofPerNode];
+            int[,]arr2d = new int[Nodes.Count, Nodes[0].DofPerNode];
+            var count = 0;
+            for (int i = 0; i < Nodes.Count; i++)
+            {
+                for (int j = 0; j < _dofPerNode; j++)
+                {
+                        arr2d[i, j] = count;
+                }
+            }
+            return arr2d;
+        }
+        private Matrix<double> GetDisplacementVector(Matrix<double> KGReduced, Matrix<double> forceReduced)
+        {
 
-            //_KGReduced = Matrix<double>.Build.Dense(count, count);
-            //foreach (TrussElement element in _ElementsList)
-            //{
-            //    for (int i = 0; i < _dofPerNode; i++)
-            //    {
-            //        G[i] = arr2d[element.NodeI.ID - 1, i];
-            //        G[i + 2] = arr2d[element.NodeJ.ID - 1, i];
-            //    }
-
-            //    Matrix<double> Kg = element.Kglobal;
-            //    for (int i = 0; i < 4; i++)
-            //    {
-            //        for (int j = 0; j < 4; j++)
-            //        {
-            //            var P = G[i];
-            //            var Q = G[j];
-            //            if (P != -1 && Q != -1)
-            //            {
-            //                _KGReduced[P, Q] = _KGReduced[P, Q] + Kg[i, j];
-            //            }
-            //        }
-            //    }
-            //}
+            return KGReduced.Inverse() * forceReduced;
         }
 
-
-        private void GetReducedForceVector()
+        private Matrix<double> GetTotalDisplacement(List<Node> Nodes, Matrix<double> displacements)
         {
-            //int[,] arr2d;
-            //int count;
-            //GetMappingArray(out arr2d, out count);
+            GetMappingArray(out int[,] arr2d, out int count, Nodes);
+            var NumberOfDof = Nodes.Count * Nodes[0].DofPerNode;
+            var displacementsTotal = Matrix<double>.Build.Dense(NumberOfDof, 1);
 
-            //_forceReduced = Matrix<double>.Build.Dense(count, 1);
-
-            //foreach (PointLoad load in _loadList)
-            //{
-            //    for (int i = 0; i < 2; i++)
-            //    {
-            //        var Q = arr2d[load.NodeID - 1, i];
-            //        if (Q != -1)
-            //        {
-            //            switch (i)
-            //            {
-            //                case 0:
-
-            //                    _forceReduced[Q, 0] = load.Load.XComponent;
-            //                    break;
-            //                case 1:
-
-            //                    _forceReduced[Q, 0] = load.Load.YComponent;
-            //                    break;
-            //            }
-            //        }
-            //    }
-            //}
-        }
-
-        //private void GetMappingArray(out int[,] arr2d, out int count)
-        //{
-
-        //    //arr2d = new int[_TotalNodes, _dofPerNode];
-        //    //foreach (var node in _restrainedNodes)
-        //    //{
-        //    //    var rowID = node.NodeID;
-        //    //    if (node.Direction == eRestraintCondition.X)
-        //    //    {
-        //    //        arr2d[rowID - 1, 0] = -1;
-        //    //    }
-        //    //    else if (node.Direction == eRestraintCondition.Y)
-        //    //    {
-
-        //    //        arr2d[rowID - 1, 1] = -1;
-        //    //    }
-        //    //    else if (node.Direction == eRestraintCondition.XY)
-        //    //    {
-        //    //        arr2d[rowID - 1, 0] = -1;
-        //    //        arr2d[rowID - 1, 1] = -1;
-        //    //    }
-        //    //}
-        //    //count = 0;
-        //    //for (int i = 0; i < _TotalNodes; i++)
-        //    //{
-        //    //    for (int j = 0; j < _dofPerNode; j++)
-        //    //    {
-        //    //        if (arr2d[i, j] == 0)
-        //    //        {
-        //    //            arr2d[i, j] = count;
-        //    //            count += 1;
-        //    //        }
-
-        //    //    }
-
-        //    //}
-        //}
-        private void  GetDisplacementVector()
-        {
-
-            _displacements = _KGReduced.Inverse() * _forceReduced;
-        }
-
-        private void GetTotalDisplacement()
-        {
-            //int[,] arr2d;
-            //int count;
-            //GetMappingArray(out arr2d, out count);
-
-            //_displacementsTotal = Matrix<double>.Build.Dense(_Ndof, 1);
-
-            //for (int j = 0; j < _TotalNodes; j++)
-            //{
-            //    for (int i = 0; i < 2; i++)
-            //    {
-            //        var Q = arr2d[j, i];
-            //        if (Q != -1)
-            //        {
-            //            _displacementsTotal[2*j+i, 0] = _displacements[Q, 0];
-            //        }
-            //    }
-            //}
-
+            for (int j = 0; j < NumberOfDof / 2; j++)
+            {
+                for (int i = 0; i < 2; i++)
+                {
+                    var Q = arr2d[j, i];
+                    if (Q != -1)
+                    {
+                        var Id = 2 * j + i;
+                        displacementsTotal[Id, 0] = displacements[Q, 0];
+                        var node = (TrussNode)Nodes.FirstOrDefault(x => x.ID == j+1);
+                        if (i==0)
+                        {
+                            node.Dispx = displacements[Q, 0];
+                        }
+                        else
+                        {
+                            node.Dispy= displacements[Q, 0];
+                        }
+                    }
+                }
+            }
+            return displacementsTotal;
         }
 
 

@@ -7,6 +7,9 @@ using System.Windows.Forms;
 using System.Drawing.Drawing2D;
 using DevExpress.XtraCharts;
 using System.Linq;
+using System.Windows.Forms.DataVisualization.Charting;
+using Series = DevExpress.XtraCharts.Series;
+using System.ComponentModel;
 
 namespace SSH
 {
@@ -19,7 +22,7 @@ namespace SSH
         {
             InitializeComponent();
             SubscribeToEvents();
-            _nodesList = new List<NodesInfo>();
+            _nodesList = new List<Node>();
             _TrussElementsList = new List<TrussElement>();
             _restrainedNodes = new List<RestrainedNode>();
             _nodalForces = new List<PointLoad>();
@@ -36,6 +39,34 @@ namespace SSH
             EditBCTableGridView();
             EditLoadTableGridView();
             drawChart();
+        }
+
+        #endregion
+
+        #region Private Fields
+
+        private List<Node> _nodesList;
+        private List<TrussElement> _TrussElementsList;
+        private DataTable _dataNodeTable;
+        private DataTable _dataTrussElementsTable;
+        private DataTable _dataBoundaryConditionsTable;
+        private DataTable _dataLoadTable;
+        private List<RestrainedNode> _restrainedNodes;
+        private List<PointLoad> _nodalForces;
+        private Graphics _g;
+
+        #endregion
+
+        #region Private Methods
+
+        private void SubscribeToEvents()
+        {
+            btnAddNode.Click += BtnAddNode_Click;
+            btnAddElement.Click += BtnAddElement_Click;
+            btnAddLoad.Click += BtnAddLoad_Click;
+            btnAddRestrain.Click += BtnAddRestrain_Click;
+            btnSolveTruss.Click += BtnSolveTruss_Click;
+            pictureBox1.Paint += canvasPictureBox_Paint;
         }
 
         private void CreateExample1()
@@ -59,11 +90,29 @@ namespace SSH
             AddRestrainedNode(4, true, true);
             AddRestrainedNode(6, true, true);
             AddLoad(1, 0, -200000);
+
+        }
+
+        private void CreateExample2()
+        {
+            AddNode(1, 0, 0);
+            AddNode(2, 1, 0);
+            AddNode(3, 0.5, 1);
+            var E = 1 * Math.Pow(10, 6);
+            var A = 10000;
+            AddMember("A", 1, 2, E, A);
+            AddMember("B", 2, 3, E, A);
+            AddMember("C", 3, 1, E, A);
+            AddRestrainedNode(1, true, true);
+            AddRestrainedNode(2, false, true);
+            AddLoad(3, 0, -20);
+
+
         }
 
         private void AddLoad(int nodeId, double fx, double fy)
         {
-            var node = GetNodeById(nodeId);
+            var node = (TrussNode)GetNodeById(nodeId);
             node.Fx = fx;
             node.Fy = fy;
 
@@ -71,26 +120,28 @@ namespace SSH
 
         private void AddRestrainedNode(int nodeId, bool isXRestrained, bool isYRestrained)
         {
-            var node = GetNodeById(nodeId);
+            var node = (TrussNode)GetNodeById(nodeId);
             node.XDirection = isXRestrained ? eRestraintCondition.restrained : eRestraintCondition.free;
             node.YDirection = isYRestrained ? eRestraintCondition.restrained : eRestraintCondition.free;
         }
 
-        private NodesInfo GetNodeById(int NodeId)
+        private Node GetNodeById(int NodeId)
         {
             return _nodesList.FirstOrDefault(x => x.ID == NodeId);
         }
 
         private void AddNode(int ID, double X, double Y)
         {
-            _nodesList.Add(new NodesInfo(ID, X, Y));
+            _nodesList.Add(new TrussNode(ID, X, Y));
         }
+
         public void AddMember(string memberLabel, int nodeI, int nodeJ, double Area, double E)
         {
             var nodei = GetNodeById(nodeI);
             var nodej = GetNodeById(nodeJ);
             _TrussElementsList.Add(new TrussElement(memberLabel, nodei, nodej, E, Area));
         }
+
         private void RefreshGraphics()
         {
             Pen pen = new Pen(new SolidBrush(Color.SkyBlue));
@@ -115,38 +166,11 @@ namespace SSH
             //drawingControl.OptionsView.ShowGrid= false;
         }
 
-        #endregion
-
-        #region Private Fields
-
-        private List<NodesInfo> _nodesList;
-        private List<TrussElement> _TrussElementsList;
-        private int _nodeCount;
-        private DataTable _dataNodeTable;
-        private DataTable _dataTrussElementsTable;
-        private DataTable _dataBoundaryConditionsTable;
-        private DataTable _dataLoadTable;
-        private List<RestrainedNode> _restrainedNodes;
-        private List<PointLoad> _nodalForces;
-        private Graphics _g;
-
-        #endregion
-
-        #region Private Methods
-        private void SubscribeToEvents()
-        {
-            btnAddNode.Click += BtnAddNode_Click;
-            btnAddElement.Click += BtnAddElement_Click;
-            btnAddLoad.Click += BtnAddLoad_Click;
-            btnAddRestrain.Click += BtnAddRestrain_Click;
-            btnSolveTruss.Click += BtnSolveTruss_Click;
-            pictureBox1.Paint += canvasPictureBox_Paint;
-        }
-
-
         private void BtnSolveTruss_Click(object sender, EventArgs e)
         {
-            Assembler assembler = new Assembler(_TrussElementsList, _nodalForces, _restrainedNodes, _nodesList.Count);
+            Assembler assembler = new Assembler(_TrussElementsList, _nodesList);
+            //AdddisplacementToSeries();
+            GenerateColorMap(0, 0, 5, 8.66, 0,10);
         }
 
         private void BtnAddRestrain_Click(object sender, EventArgs e)
@@ -237,7 +261,7 @@ namespace SSH
         {
             DataRow row;
             _dataNodeTable.Rows.Clear();
-            foreach (NodesInfo node in _nodesList)
+            foreach (Node node in _nodesList)
             {
                 row = _dataNodeTable.NewRow();
                 row[0] = node.ID;
@@ -246,6 +270,7 @@ namespace SSH
                 _dataNodeTable.Rows.Add(row);
             }
         }
+
         private void AddElementsDataRows()
         {
             DataRow row;
@@ -323,97 +348,141 @@ namespace SSH
             gcLoads.DataSource = _dataLoadTable;
         }
 
-
-
-
-        #endregion
-
-        #region Events
-
-        private void BtnAddNode_Click(object sender, EventArgs e)
-        {
-            var Xcoord = Convert.ToDouble(txtNodeX.Text);
-            var Ycoord = Convert.ToDouble(txtNodeY.Text);
-
-            //_nodesList.Add(new NodesInfo(Xcoord, Ycoord, ++_nodeCount));
-            AddNodesDataRows();
-            drawChart();
-            //CreateChart();
-            //RefreshGraphics();
-            //drawingControl.Refresh();
-        }
-
-        private void BtnAddLoad_Click(object sender, EventArgs e)
-        {
-            int node = Convert.ToInt32(txtNodeIdLoading.Text);
-            double xComponent = Convert.ToDouble(txtXComponent.Text);
-            double YComponent = Convert.ToDouble(txtYComponent.Text);
-            _nodalForces.Add(new PointLoad(node, new Load(xComponent, YComponent)));
-            AddLoadsDataRows();
-
-        }
-
         private void drawChart()
         {
-            // Add data points to the series
-            foreach (var element in _TrussElementsList)
-            {
-                Series series = new Series(element.Memberlabel, ViewType.Line);
-                series.Points.Add(new SeriesPoint(element.NodeI.Xcoord, element.NodeI.Ycoord));
-                series.Points.Add(new SeriesPoint(element.NodeJ.Xcoord, element.NodeJ.Ycoord));
-                LineSeriesView lineView = (LineSeriesView)series.View;
-                lineView.MarkerVisibility = DevExpress.Utils.DefaultBoolean.False;
-                //lineView.LineMarkerOptions.Size = 1;
-                //lineView.LineMarkerOptions.Kind = MarkerKind.Circle;
-                lineView.LineStyle.Thickness = 5;
-                lineView.LineMarkerOptions.BorderColor = Color.Black;
-                lineView.LineMarkerOptions.BorderVisible = true;
-                chartDrawing.Series.Add(series);
-                series.View.Color = Color.LightGray;
-            }
+            //// Add elements to the series
+            //AddElementsToSeries();
+
+            //// Add nodes to the series
+            //AddNodesToSeries();
 
 
-            // Add points to it.
 
-            foreach (NodesInfo nodes in _nodesList)
-            {
-                Series series1 = new Series("Nodes", ViewType.Point);
-                PointSeriesView seriesView = (PointSeriesView)series1.View;
-                if (nodes.XDirection == eRestraintCondition.free)
-                {
-                    seriesView.PointMarkerOptions.Kind = MarkerKind.Circle;
-                    seriesView.Color = Color.Blue;
-                    series1.Points.Add(new SeriesPoint(nodes.Xcoord, nodes.Ycoord));
-                }
-                else
-                {
-                    seriesView.Color = Color.Red;
-                    seriesView.PointMarkerOptions.Kind = MarkerKind.Triangle;
-                    series1.Points.Add(new SeriesPoint(nodes.Xcoord, nodes.Ycoord - 0.2));
 
-                    seriesView.PointMarkerOptions.Size = 15;
-                }
-                chartDrawing.Series.Add(series1);
-            }
 
-            // Add the series to the chart.
-            XYDiagram diagram = (XYDiagram)chartDrawing.Diagram;
-            //diagram.AxisY.WholeRange.MinValue = -1;
+
+
+
+
+
+
+
+
+
+            ////Add the series to the chart.
+            //XYDiagram diagram = (XYDiagram)chartDrawing.Diagram;
+            //diagram.AxisY.WholeRange.MinValue = -_nodesList.Min(x => x.Ycoord);
             //diagram.AxisY.WholeRange.MaxValue = 5;
 
-            // Set the numerical argument scale types for the series,
-            // as it is qualitative, by default.
-            //series1.ArgumentScaleType = ScaleType.Numerical;
+            //// Set the numerical argument scale types for the series,
+            //// as it is qualitative, by default.
+            ////series1.ArgumentScaleType = ScaleType.Numerical;
 
-            // Access the view-type-specific options of the series.
-            //((LineSeriesView)series1.View).MarkerVisibility = DevExpress.Utils.DefaultBoolean.True;
-            //((LineSeriesView)series1.View).LineMarkerOptions.Kind = MarkerKind.Circle;
+            //// Access the view-type-specific options of the series.
+            ////((LineSeriesView)series1.View).MarkerVisibility = DevExpress.Utils.DefaultBoolean.True;
+            ////((LineSeriesView)series1.View).LineMarkerOptions.Kind = MarkerKind.Circle;
 
-            // Access the type-specific options of the diagram.
-            ((XYDiagram)chartDrawing.Diagram).EnableAxisXZooming = true;
+            //// Access the type-specific options of the diagram.
+            //((XYDiagram)chartDrawing.Diagram).EnableAxisXZooming = true;
 
-            // Hide the legend (if necessary).
-            chartDrawing.Legend.Visibility = DevExpress.Utils.DefaultBoolean.False;
+            //// Hide the legend (if necessary).
+            //chartDrawing.Legend.Visibility = DevExpress.Utils.DefaultBoolean.False;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            //double xmin = 0;
+            //double xmax = 15;
+            //double ymin = 0;
+            //double ymax = 8.66;
+            //int numPoints = 100;
+
+            //Color[] cmapColors = Enumerable.Range(0, 256).Select(i => Color.FromArgb(255, jet_cmap(i / 255.0))).ToArray();
+            //ChartColorPalette jetPalette = ChartColorPalette.None;
+
+            //double[] x = Enumerable.Range(0, numPoints).Select(i => xmin + i * (xmax - xmin) / (numPoints - 1.0)).ToArray();
+            //double[] y = Enumerable.Repeat(ymin, numPoints).ToArray();
+
+            //// Divide the line into numPoints points and calculate the colors for each point
+            //Color[] pointColors = x.Select(v => jetPalette == ChartColorPalette.None ? cmapColors[(int)Math.Round((v - xmin) * 255.0 / (xmax - xmin))] : Color.FromArgb(255, jet_cmap((v - xmin) / (xmax - xmin)))).ToArray();
+
+            //// Create a chart and add a series for the line
+            //ChartControl chartControl1 = new ChartControl();
+            //this.Controls.Add(chartControl1);
+            //chartControl1.Dock = DockStyle.Fill;
+            //chartControl1.Titles.Add(new ChartTitle());
+            //chartControl1.Titles[0].Text = "Jet Colormap";
+            //chartControl1.Legend.Visibility = DevExpress.Utils.DefaultBoolean.False;
+            //Series series3 = new Series("Line", ViewType.Line);
+            //for (int i = 0; i < numPoints; i++)
+            //{
+            //    series3.Points.Add(new SeriesPoint(x[i], y[i]) { Color = pointColors[i] });
+            //}
+            //chartControl1.Series.Add(series3);
+
+            //// Set the axis labels and range
+            //XYDiagram diagram = (XYDiagram)chartControl1.Diagram;
+            //diagram.AxisX.Title.Text = "X-Values";
+            //diagram.AxisY.Title.Text = "Y-Values";
+            //diagram.AxisX.WholeRange.Auto = false;
+            //diagram.AxisX.WholeRange.SetMinMaxValues(xmin, xmax);
+            //diagram.AxisY.WholeRange.Auto = false;
+            //diagram.AxisY.WholeRange.SetMinMaxValues(ymin, ymax);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -559,6 +628,186 @@ namespace SSH
             //this.Controls.Add(chartDrawing);
         }
 
+        private void GenerateColorMap(double x1, double y1, double x2, double y2, double minvalue, double maxvalue, int numPoints = 300)
+        {
+
+            double[] x = Enumerable.Range(0, numPoints).Select(i => x1 + i * (x2 - x1) / (numPoints - 1.0)).ToArray();
+            double[] y = Enumerable.Range(0, numPoints).Select(i => y1 + i * (y2 - y1) / (numPoints - 1.0)).ToArray();
+
+            // Evaluate intensity for each point using interpolation
+            double[] intensities = new double[numPoints];
+            intensities[0] = minvalue;
+            intensities[intensities.Length - 1] = maxvalue;
+
+            for (int i = 1; i < intensities.Length - 1; i++)
+            {
+                double t = (double)i / (intensities.Length - 1);
+                intensities[i] = (1 - t) * intensities[0] + t * intensities[intensities.Length - 1];
+            }
+
+
+            // Normalize the intensities
+            var maxIntensity = intensities.Max();
+            var normalizedIntensities = intensities.Select(i => i / maxIntensity).ToArray();
+
+            // Define the colors
+            Color[] colors = { Color.Blue, Color.Cyan, Color.Lime, Color.Yellow, Color.Orange, Color.Red };
+
+            // Create a scatter chart series
+            var series = new Series("Intensity", ViewType.Point);
+            for (int i = 0; i < numPoints; i++)
+            {
+                var intensity = normalizedIntensities[i];
+                var colorIndex = (int)(intensity * (colors.Length - 1));
+                var pointColor = colors[colorIndex];
+                var seriesPoint = new SeriesPoint(x[i], y[i]) { Color = pointColor };
+                series.Points.Add(seriesPoint);
+            }
+
+            // Add the series to the chart
+            chartDrawing.Series.Add(series);
+        }
+
+        private void AddNodesToSeries()
+        {
+            foreach (TrussNode nodes in _nodesList)
+            {
+                Series series1 = new Series("Nodes", ViewType.Point);
+                PointSeriesView seriesView = (PointSeriesView)series1.View;
+                if (nodes.XDirection == eRestraintCondition.free)
+                {
+                    seriesView.PointMarkerOptions.Kind = MarkerKind.Circle;
+                    seriesView.Color = Color.Blue;
+                    series1.Points.Add(new SeriesPoint(nodes.Xcoord, nodes.Ycoord));
+                }
+                else
+                {
+                    seriesView.Color = Color.Red;
+                    seriesView.PointMarkerOptions.Kind = MarkerKind.Triangle;
+                    series1.Points.Add(new SeriesPoint(nodes.Xcoord, nodes.Ycoord));
+
+                    seriesView.PointMarkerOptions.Size = 15;
+                }
+                series1.ShowInLegend = false;
+                chartDrawing.Series.Add(series1);
+            }
+        }
+
+        private void AddElementsToSeries()
+        {
+            foreach (var element in _TrussElementsList)
+            {
+                Series series = new Series(element.Memberlabel, ViewType.Line);
+                series.Points.Add(new SeriesPoint(element.NodeI.Xcoord, element.NodeI.Ycoord));
+                series.Points.Add(new SeriesPoint(element.NodeJ.Xcoord, element.NodeJ.Ycoord));
+                LineSeriesView lineView = (LineSeriesView)series.View;
+                lineView.MarkerVisibility = DevExpress.Utils.DefaultBoolean.False;
+                //lineView.LineMarkerOptions.Size = 1;
+                //lineView.LineMarkerOptions.Kind = MarkerKind.Circle;
+                lineView.LineStyle.Thickness = 1;
+                lineView.LineMarkerOptions.BorderColor = Color.Black;
+                lineView.LineMarkerOptions.BorderVisible = true;
+                series.ShowInLegend = false;
+                chartDrawing.Series.Add(series);
+                series.View.Color = Color.LightGray;
+            }
+        }
+
+        private void AdddisplacementToSeries()
+        {
+            var magnificationFactor = 150000000;
+            foreach (var element in _TrussElementsList)
+            {
+                var NodeI = (TrussNode)element.NodeI;
+                var NodeJ = (TrussNode)element.NodeJ;
+                Series series = new Series(element.Memberlabel, ViewType.Line);
+                series.Points.Add(new SeriesPoint(NodeI.getXcoordFinal(magnificationFactor), NodeI.getYcoordFinal(magnificationFactor)));
+                series.Points.Add(new SeriesPoint(NodeJ.getXcoordFinal(magnificationFactor), NodeJ.getYcoordFinal(magnificationFactor)));
+                LineSeriesView lineView = (LineSeriesView)series.View;
+                lineView.MarkerVisibility = DevExpress.Utils.DefaultBoolean.False;
+                //lineView.LineMarkerOptions.Size = 1;
+                //lineView.LineMarkerOptions.Kind = MarkerKind.Circle;
+                lineView.LineStyle.Thickness = 1;
+                lineView.LineMarkerOptions.BorderColor = Color.Black;
+                lineView.LineMarkerOptions.BorderVisible = true;
+                series.ShowInLegend = false;
+                chartDrawing.Series.Add(series);
+                series.View.Color = Color.Cyan;
+            }
+        }
+
+        private Color jet_cmap(double v)
+        {
+            double r, g, b;
+
+            if (v < 0.0 || v > 1.0)
+            {
+                throw new ArgumentException("Value must be in the range [0, 1].");
+            }
+            else if (v < 0.125)
+            {
+                r = 0.0;
+                g = 0.0;
+                b = 0.5 + 4.0 * v;
+            }
+            else if (v < 0.375)
+            {
+                r = 0.0;
+                g = 4.0 * (v - 0.125);
+                b = 0.5;
+            }
+            else if (v < 0.625)
+            {
+                r = 4.0 * (v - 0.375);
+                g = 1.0;
+                b = 1.5 - 4.0 * v;
+            }
+            else if (v < 0.875)
+            {
+                r = 1.0;
+                g = 1.0 - 4.0 * (v - 0.625);
+                b = 0.5;
+            }
+            else
+            {
+                r = 1.0 - 4.0 * (v - 0.875);
+                g = 0.0;
+                b = 0.5;
+            }
+            int red = (int)Math.Round(r * 255.0);
+            int green = (int)Math.Round(g * 255.0);
+            int blue = (int)Math.Round(Math.Max(b, 0) * 255.0);
+
+            return Color.FromArgb(red, green, blue);
+        }
+
+        #endregion
+
+        #region Events
+
+        private void BtnAddNode_Click(object sender, EventArgs e)
+        {
+            var Xcoord = Convert.ToDouble(txtNodeX.Text);
+            var Ycoord = Convert.ToDouble(txtNodeY.Text);
+
+            //_nodesList.Add(new NodesInfo(Xcoord, Ycoord, ++_nodeCount));
+            AddNodesDataRows();
+            drawChart();
+            //CreateChart();
+            //RefreshGraphics();
+            //drawingControl.Refresh();
+        }
+
+        private void BtnAddLoad_Click(object sender, EventArgs e)
+        {
+            int node = Convert.ToInt32(txtNodeIdLoading.Text);
+            double xComponent = Convert.ToDouble(txtXComponent.Text);
+            double YComponent = Convert.ToDouble(txtYComponent.Text);
+            _nodalForces.Add(new PointLoad(node, new Load(xComponent, YComponent)));
+            AddLoadsDataRows();
+
+        }
+
         private void canvasPictureBox_Paint(object sender, PaintEventArgs e)
         {
             // Define the min and max values and the number of pieces
@@ -607,5 +856,55 @@ namespace SSH
         #endregion
 
 
+    }
+
+    public class JetColorizer : IColorizer
+    {
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public Color GetAggregatedPointColor(object argument, object[] values, SeriesPoint[] points, Palette palette)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Color GetColor(double value)
+        {
+            double r, g, b;
+            if (value < 0.25)
+            {
+                r = 0;
+                g = 4 * value;
+                b = 1;
+            }
+            else if (value < 0.5)
+            {
+                r = 0;
+                g = 1;
+                b = 1 + 4 * (0.25 - value);
+            }
+            else if (value < 0.75)
+            {
+                r = 4 * (value - 0.5);
+                g = 1;
+                b = 0;
+            }
+            else
+            {
+                r = 1;
+                g = 1 + 4 * (0.75 - value);
+                b = 0;
+            }
+            return Color.FromArgb((int)(255 * r), (int)(255 * g), (int)(255 * b));
+        }
+
+        public Color GetPointColor(object argument, object[] values, object colorKey, Palette palette)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Color GetPointColor(object argument, object[] values, object[] colorKeys, Palette palette)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

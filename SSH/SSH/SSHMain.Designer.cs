@@ -53,34 +53,31 @@ namespace SSH
             this.gcNodes = new DevExpress.XtraGrid.GridControl();
             this.gvNodes = new DevExpress.XtraGrid.Views.Grid.GridView();
             this.btnAddNode = new System.Windows.Forms.Button();
-            this.groupBox6 = new System.Windows.Forms.GroupBox();
-            this.txtNodeY = new System.Windows.Forms.TextBox();
-            this.label12 = new System.Windows.Forms.Label();
-            this.txtNodeX = new System.Windows.Forms.TextBox();
-            this.label13 = new System.Windows.Forms.Label();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.gcLoads = new DevExpress.XtraGrid.GridControl();
             this.gvLoads = new DevExpress.XtraGrid.Views.Grid.GridView();
             this.btnAddLoad = new System.Windows.Forms.Button();
-            this.groupBox7 = new System.Windows.Forms.GroupBox();
-            this.txtNodeIdLoading = new System.Windows.Forms.TextBox();
-            this.label8 = new System.Windows.Forms.Label();
-            this.txtYComponent = new System.Windows.Forms.TextBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.txtXComponent = new System.Windows.Forms.TextBox();
-            this.label6 = new System.Windows.Forms.Label();
             this.groupBox8 = new System.Windows.Forms.GroupBox();
             this.gcBoundaryConditions = new DevExpress.XtraGrid.GridControl();
             this.gvBoundaryConditions = new DevExpress.XtraGrid.Views.Grid.GridView();
             this.btnAddRestrain = new System.Windows.Forms.Button();
-            this.groupBox9 = new System.Windows.Forms.GroupBox();
+            this.btnSolveTruss = new System.Windows.Forms.Button();
+            this.chartDrawing = new DevExpress.XtraCharts.ChartControl();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.txtNodeIdLoading = new System.Windows.Forms.TextBox();
+            this.label8 = new System.Windows.Forms.Label();
+            this.txtNodeY = new System.Windows.Forms.TextBox();
+            this.label12 = new System.Windows.Forms.Label();
+            this.txtNodeX = new System.Windows.Forms.TextBox();
+            this.label13 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.txtYComponent = new System.Windows.Forms.TextBox();
+            this.txtXComponent = new System.Windows.Forms.TextBox();
             this.cmbSupportType = new System.Windows.Forms.ComboBox();
             this.label7 = new System.Windows.Forms.Label();
             this.txtBCNodeId = new System.Windows.Forms.TextBox();
             this.N = new System.Windows.Forms.Label();
-            this.btnSolveTruss = new System.Windows.Forms.Button();
-            this.chartDrawing = new DevExpress.XtraCharts.ChartControl();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.ribbonControl1)).BeginInit();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gcTrussElements)).BeginInit();
@@ -90,15 +87,12 @@ namespace SSH
             this.groupBox4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gcNodes)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gvNodes)).BeginInit();
-            this.groupBox6.SuspendLayout();
             this.groupBox5.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gcLoads)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gvLoads)).BeginInit();
-            this.groupBox7.SuspendLayout();
             this.groupBox8.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gcBoundaryConditions)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gvBoundaryConditions)).BeginInit();
-            this.groupBox9.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chartDrawing)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
@@ -262,9 +256,9 @@ namespace SSH
             this.groupBox3.Controls.Add(this.gcTrussElements);
             this.groupBox3.Controls.Add(this.btnAddElement);
             this.groupBox3.Controls.Add(this.groupBox1);
-            this.groupBox3.Location = new System.Drawing.Point(0, 475);
+            this.groupBox3.Location = new System.Drawing.Point(12, 461);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(714, 302);
+            this.groupBox3.Size = new System.Drawing.Size(687, 302);
             this.groupBox3.TabIndex = 18;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Elements Info";
@@ -287,12 +281,15 @@ namespace SSH
             // 
             this.groupBox4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox4.Controls.Add(this.txtNodeY);
+            this.groupBox4.Controls.Add(this.label12);
+            this.groupBox4.Controls.Add(this.txtNodeX);
+            this.groupBox4.Controls.Add(this.label13);
             this.groupBox4.Controls.Add(this.gcNodes);
             this.groupBox4.Controls.Add(this.btnAddNode);
-            this.groupBox4.Controls.Add(this.groupBox6);
-            this.groupBox4.Location = new System.Drawing.Point(12, 164);
+            this.groupBox4.Location = new System.Drawing.Point(12, 165);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(460, 305);
+            this.groupBox4.Size = new System.Drawing.Size(337, 289);
             this.groupBox4.TabIndex = 19;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Nodes Info";
@@ -315,70 +312,28 @@ namespace SSH
             // 
             // btnAddNode
             // 
-            this.btnAddNode.Location = new System.Drawing.Point(235, 48);
+            this.btnAddNode.Location = new System.Drawing.Point(155, 38);
             this.btnAddNode.Name = "btnAddNode";
-            this.btnAddNode.Size = new System.Drawing.Size(86, 49);
+            this.btnAddNode.Size = new System.Drawing.Size(66, 34);
             this.btnAddNode.TabIndex = 16;
             this.btnAddNode.Text = "Add Node";
             this.btnAddNode.UseVisualStyleBackColor = true;
-            // 
-            // groupBox6
-            // 
-            this.groupBox6.Controls.Add(this.txtNodeY);
-            this.groupBox6.Controls.Add(this.label12);
-            this.groupBox6.Controls.Add(this.txtNodeX);
-            this.groupBox6.Controls.Add(this.label13);
-            this.groupBox6.Location = new System.Drawing.Point(16, 29);
-            this.groupBox6.Name = "groupBox6";
-            this.groupBox6.Size = new System.Drawing.Size(213, 78);
-            this.groupBox6.TabIndex = 12;
-            this.groupBox6.TabStop = false;
-            this.groupBox6.Text = "Nodes Input";
-            // 
-            // txtNodeY
-            // 
-            this.txtNodeY.Location = new System.Drawing.Point(58, 47);
-            this.txtNodeY.Name = "txtNodeY";
-            this.txtNodeY.Size = new System.Drawing.Size(85, 21);
-            this.txtNodeY.TabIndex = 14;
-            this.txtNodeY.Text = "0";
-            // 
-            // label12
-            // 
-            this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(12, 50);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(40, 13);
-            this.label12.TabIndex = 13;
-            this.label12.Text = "Ycoord";
-            // 
-            // txtNodeX
-            // 
-            this.txtNodeX.Location = new System.Drawing.Point(58, 20);
-            this.txtNodeX.Name = "txtNodeX";
-            this.txtNodeX.Size = new System.Drawing.Size(85, 21);
-            this.txtNodeX.TabIndex = 12;
-            this.txtNodeX.Text = "0";
-            // 
-            // label13
-            // 
-            this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(12, 23);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(40, 13);
-            this.label13.TabIndex = 11;
-            this.label13.Text = "Xcoord";
             // 
             // groupBox5
             // 
             this.groupBox5.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox5.Controls.Add(this.txtNodeIdLoading);
+            this.groupBox5.Controls.Add(this.label8);
+            this.groupBox5.Controls.Add(this.txtYComponent);
+            this.groupBox5.Controls.Add(this.label3);
+            this.groupBox5.Controls.Add(this.txtXComponent);
+            this.groupBox5.Controls.Add(this.label6);
             this.groupBox5.Controls.Add(this.gcLoads);
             this.groupBox5.Controls.Add(this.btnAddLoad);
-            this.groupBox5.Controls.Add(this.groupBox7);
-            this.groupBox5.Location = new System.Drawing.Point(406, 164);
+            this.groupBox5.Location = new System.Drawing.Point(362, 165);
             this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(460, 305);
+            this.groupBox5.Size = new System.Drawing.Size(337, 290);
             this.groupBox5.TabIndex = 20;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Loading Info";
@@ -401,86 +356,26 @@ namespace SSH
             // 
             // btnAddLoad
             // 
-            this.btnAddLoad.Location = new System.Drawing.Point(296, 37);
+            this.btnAddLoad.Location = new System.Drawing.Point(163, 38);
             this.btnAddLoad.Name = "btnAddLoad";
-            this.btnAddLoad.Size = new System.Drawing.Size(86, 49);
+            this.btnAddLoad.Size = new System.Drawing.Size(66, 36);
             this.btnAddLoad.TabIndex = 16;
             this.btnAddLoad.Text = "Add Load";
             this.btnAddLoad.UseVisualStyleBackColor = true;
-            // 
-            // groupBox7
-            // 
-            this.groupBox7.Controls.Add(this.txtNodeIdLoading);
-            this.groupBox7.Controls.Add(this.label8);
-            this.groupBox7.Controls.Add(this.txtYComponent);
-            this.groupBox7.Controls.Add(this.label3);
-            this.groupBox7.Controls.Add(this.txtXComponent);
-            this.groupBox7.Controls.Add(this.label6);
-            this.groupBox7.Location = new System.Drawing.Point(16, 29);
-            this.groupBox7.Name = "groupBox7";
-            this.groupBox7.Size = new System.Drawing.Size(274, 78);
-            this.groupBox7.TabIndex = 12;
-            this.groupBox7.TabStop = false;
-            this.groupBox7.Text = "Components";
-            // 
-            // txtNodeIdLoading
-            // 
-            this.txtNodeIdLoading.Location = new System.Drawing.Point(60, 32);
-            this.txtNodeIdLoading.Name = "txtNodeIdLoading";
-            this.txtNodeIdLoading.Size = new System.Drawing.Size(85, 21);
-            this.txtNodeIdLoading.TabIndex = 16;
-            // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(8, 40);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(46, 13);
-            this.label8.TabIndex = 15;
-            this.label8.Text = "Node ID";
-            // 
-            // txtYComponent
-            // 
-            this.txtYComponent.Location = new System.Drawing.Point(183, 47);
-            this.txtYComponent.Name = "txtYComponent";
-            this.txtYComponent.Size = new System.Drawing.Size(85, 21);
-            this.txtYComponent.TabIndex = 14;
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(164, 50);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(13, 13);
-            this.label3.TabIndex = 13;
-            this.label3.Text = "Y";
-            // 
-            // txtXComponent
-            // 
-            this.txtXComponent.Location = new System.Drawing.Point(183, 20);
-            this.txtXComponent.Name = "txtXComponent";
-            this.txtXComponent.Size = new System.Drawing.Size(85, 21);
-            this.txtXComponent.TabIndex = 12;
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(164, 23);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(13, 13);
-            this.label6.TabIndex = 11;
-            this.label6.Text = "X";
             // 
             // groupBox8
             // 
             this.groupBox8.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox8.Controls.Add(this.cmbSupportType);
+            this.groupBox8.Controls.Add(this.label7);
+            this.groupBox8.Controls.Add(this.txtBCNodeId);
+            this.groupBox8.Controls.Add(this.N);
             this.groupBox8.Controls.Add(this.gcBoundaryConditions);
             this.groupBox8.Controls.Add(this.btnAddRestrain);
-            this.groupBox8.Controls.Add(this.groupBox9);
-            this.groupBox8.Location = new System.Drawing.Point(800, 164);
+            this.groupBox8.Location = new System.Drawing.Point(705, 165);
             this.groupBox8.Name = "groupBox8";
-            this.groupBox8.Size = new System.Drawing.Size(460, 305);
+            this.groupBox8.Size = new System.Drawing.Size(338, 290);
             this.groupBox8.TabIndex = 23;
             this.groupBox8.TabStop = false;
             this.groupBox8.Text = "Boundary Conditions Info";
@@ -503,64 +398,18 @@ namespace SSH
             // 
             // btnAddRestrain
             // 
-            this.btnAddRestrain.Location = new System.Drawing.Point(235, 48);
+            this.btnAddRestrain.Location = new System.Drawing.Point(180, 40);
             this.btnAddRestrain.Name = "btnAddRestrain";
-            this.btnAddRestrain.Size = new System.Drawing.Size(86, 49);
+            this.btnAddRestrain.Size = new System.Drawing.Size(66, 34);
             this.btnAddRestrain.TabIndex = 16;
             this.btnAddRestrain.Text = "Add Constraint";
             this.btnAddRestrain.UseVisualStyleBackColor = true;
-            // 
-            // groupBox9
-            // 
-            this.groupBox9.Controls.Add(this.cmbSupportType);
-            this.groupBox9.Controls.Add(this.label7);
-            this.groupBox9.Controls.Add(this.txtBCNodeId);
-            this.groupBox9.Controls.Add(this.N);
-            this.groupBox9.Location = new System.Drawing.Point(16, 29);
-            this.groupBox9.Name = "groupBox9";
-            this.groupBox9.Size = new System.Drawing.Size(213, 78);
-            this.groupBox9.TabIndex = 12;
-            this.groupBox9.TabStop = false;
-            this.groupBox9.Text = "Boundary Conditions";
-            // 
-            // cmbSupportType
-            // 
-            this.cmbSupportType.FormattingEnabled = true;
-            this.cmbSupportType.Location = new System.Drawing.Point(93, 47);
-            this.cmbSupportType.Name = "cmbSupportType";
-            this.cmbSupportType.Size = new System.Drawing.Size(85, 21);
-            this.cmbSupportType.TabIndex = 14;
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(12, 50);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(75, 13);
-            this.label7.TabIndex = 13;
-            this.label7.Text = "Restrained Dir";
-            // 
-            // txtBCNodeId
-            // 
-            this.txtBCNodeId.Location = new System.Drawing.Point(93, 23);
-            this.txtBCNodeId.Name = "txtBCNodeId";
-            this.txtBCNodeId.Size = new System.Drawing.Size(85, 21);
-            this.txtBCNodeId.TabIndex = 12;
-            // 
-            // N
-            // 
-            this.N.AutoSize = true;
-            this.N.Location = new System.Drawing.Point(12, 23);
-            this.N.Name = "N";
-            this.N.Size = new System.Drawing.Size(46, 13);
-            this.N.TabIndex = 11;
-            this.N.Text = "Node ID";
             // 
             // btnSolveTruss
             // 
             this.btnSolveTruss.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnSolveTruss.Location = new System.Drawing.Point(943, 493);
+            this.btnSolveTruss.Location = new System.Drawing.Point(1089, 167);
             this.btnSolveTruss.Name = "btnSolveTruss";
             this.btnSolveTruss.Size = new System.Drawing.Size(158, 49);
             this.btnSolveTruss.TabIndex = 19;
@@ -573,21 +422,136 @@ namespace SSH
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.chartDrawing.Legend.Name = "Default Legend";
-            this.chartDrawing.Location = new System.Drawing.Point(721, 560);
+            this.chartDrawing.Location = new System.Drawing.Point(705, 469);
             this.chartDrawing.Name = "chartDrawing";
             this.chartDrawing.SeriesSerializable = new DevExpress.XtraCharts.Series[0];
-            this.chartDrawing.Size = new System.Drawing.Size(482, 216);
+            this.chartDrawing.Size = new System.Drawing.Size(465, 294);
             this.chartDrawing.TabIndex = 30;
             // 
             // pictureBox1
             // 
             this.pictureBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictureBox1.Location = new System.Drawing.Point(1209, 561);
+            this.pictureBox1.Location = new System.Drawing.Point(1179, 469);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(51, 216);
+            this.pictureBox1.Size = new System.Drawing.Size(68, 294);
             this.pictureBox1.TabIndex = 34;
             this.pictureBox1.TabStop = false;
+            // 
+            // txtNodeIdLoading
+            // 
+            this.txtNodeIdLoading.Location = new System.Drawing.Point(68, 30);
+            this.txtNodeIdLoading.Name = "txtNodeIdLoading";
+            this.txtNodeIdLoading.Size = new System.Drawing.Size(67, 21);
+            this.txtNodeIdLoading.TabIndex = 23;
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(16, 33);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(46, 13);
+            this.label8.TabIndex = 22;
+            this.label8.Text = "Node ID";
+            // 
+            // txtNodeY
+            // 
+            this.txtNodeY.Location = new System.Drawing.Point(62, 56);
+            this.txtNodeY.Name = "txtNodeY";
+            this.txtNodeY.Size = new System.Drawing.Size(67, 21);
+            this.txtNodeY.TabIndex = 21;
+            this.txtNodeY.Text = "0";
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(16, 59);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(40, 13);
+            this.label12.TabIndex = 20;
+            this.label12.Text = "Ycoord";
+            // 
+            // txtNodeX
+            // 
+            this.txtNodeX.Location = new System.Drawing.Point(62, 29);
+            this.txtNodeX.Name = "txtNodeX";
+            this.txtNodeX.Size = new System.Drawing.Size(67, 21);
+            this.txtNodeX.TabIndex = 19;
+            this.txtNodeX.Text = "0";
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(16, 32);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(40, 13);
+            this.label13.TabIndex = 18;
+            this.label13.Text = "Xcoord";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(49, 87);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(13, 13);
+            this.label3.TabIndex = 20;
+            this.label3.Text = "Y";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(49, 60);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(13, 13);
+            this.label6.TabIndex = 18;
+            this.label6.Text = "X";
+            // 
+            // txtYComponent
+            // 
+            this.txtYComponent.Location = new System.Drawing.Point(68, 84);
+            this.txtYComponent.Name = "txtYComponent";
+            this.txtYComponent.Size = new System.Drawing.Size(67, 21);
+            this.txtYComponent.TabIndex = 21;
+            // 
+            // txtXComponent
+            // 
+            this.txtXComponent.Location = new System.Drawing.Point(68, 57);
+            this.txtXComponent.Name = "txtXComponent";
+            this.txtXComponent.Size = new System.Drawing.Size(67, 21);
+            this.txtXComponent.TabIndex = 19;
+            // 
+            // cmbSupportType
+            // 
+            this.cmbSupportType.FormattingEnabled = true;
+            this.cmbSupportType.Location = new System.Drawing.Point(93, 57);
+            this.cmbSupportType.Name = "cmbSupportType";
+            this.cmbSupportType.Size = new System.Drawing.Size(67, 21);
+            this.cmbSupportType.TabIndex = 21;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(12, 59);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(75, 13);
+            this.label7.TabIndex = 20;
+            this.label7.Text = "Restrained Dir";
+            // 
+            // txtBCNodeId
+            // 
+            this.txtBCNodeId.Location = new System.Drawing.Point(93, 30);
+            this.txtBCNodeId.Name = "txtBCNodeId";
+            this.txtBCNodeId.Size = new System.Drawing.Size(67, 21);
+            this.txtBCNodeId.TabIndex = 19;
+            // 
+            // N
+            // 
+            this.N.AutoSize = true;
+            this.N.Location = new System.Drawing.Point(41, 33);
+            this.N.Name = "N";
+            this.N.Size = new System.Drawing.Size(46, 13);
+            this.N.TabIndex = 18;
+            this.N.Text = "Node ID";
             // 
             // SSHMain
             // 
@@ -614,20 +578,17 @@ namespace SSH
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.groupBox4.ResumeLayout(false);
+            this.groupBox4.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gcNodes)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.gvNodes)).EndInit();
-            this.groupBox6.ResumeLayout(false);
-            this.groupBox6.PerformLayout();
             this.groupBox5.ResumeLayout(false);
+            this.groupBox5.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gcLoads)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.gvLoads)).EndInit();
-            this.groupBox7.ResumeLayout(false);
-            this.groupBox7.PerformLayout();
             this.groupBox8.ResumeLayout(false);
+            this.groupBox8.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gcBoundaryConditions)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.gvBoundaryConditions)).EndInit();
-            this.groupBox9.ResumeLayout(false);
-            this.groupBox9.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chartDrawing)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
@@ -656,11 +617,6 @@ namespace SSH
         private DevExpress.XtraBars.BarButtonItem barButtonItem1;
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.Button btnAddNode;
-        private System.Windows.Forms.GroupBox groupBox6;
-        private System.Windows.Forms.TextBox txtNodeY;
-        private System.Windows.Forms.Label label12;
-        private System.Windows.Forms.TextBox txtNodeX;
-        private System.Windows.Forms.Label label13;
         private DevExpress.XtraGrid.GridControl gcNodes;
         private DevExpress.XtraGrid.Views.Grid.GridView gvNodes;
         private System.Windows.Forms.TextBox txtNodeJ;
@@ -670,25 +626,27 @@ namespace SSH
         private DevExpress.XtraGrid.GridControl gcLoads;
         private DevExpress.XtraGrid.Views.Grid.GridView gvLoads;
         private System.Windows.Forms.Button btnAddLoad;
-        private System.Windows.Forms.GroupBox groupBox7;
-        private System.Windows.Forms.TextBox txtYComponent;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.TextBox txtXComponent;
-        private System.Windows.Forms.Label label6;
         private System.Windows.Forms.GroupBox groupBox8;
         private DevExpress.XtraGrid.GridControl gcBoundaryConditions;
         private DevExpress.XtraGrid.Views.Grid.GridView gvBoundaryConditions;
         private System.Windows.Forms.Button btnAddRestrain;
-        private System.Windows.Forms.GroupBox groupBox9;
+        private System.Windows.Forms.Button btnSolveTruss;
+        private DevExpress.XtraCharts.ChartControl chartDrawing;
+        private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.TextBox txtNodeY;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.TextBox txtNodeX;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.TextBox txtNodeIdLoading;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.TextBox txtYComponent;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.TextBox txtXComponent;
+        private System.Windows.Forms.Label label6;
         private System.Windows.Forms.ComboBox cmbSupportType;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.TextBox txtBCNodeId;
         private System.Windows.Forms.Label N;
-        private System.Windows.Forms.TextBox txtNodeIdLoading;
-        private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.Button btnSolveTruss;
-        private DevExpress.XtraCharts.ChartControl chartDrawing;
-        private System.Windows.Forms.PictureBox pictureBox1;
     }
 }
 

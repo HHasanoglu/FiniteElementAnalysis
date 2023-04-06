@@ -9,7 +9,7 @@ namespace SSH.TrussSolver
     {
         #region Ctor
 
-        public TrussElement(string memberLabel,NodesInfo NodeI, NodesInfo NodeJ, double E, double A)
+        public TrussElement(string memberLabel,Node NodeI, Node NodeJ, double E, double A)
         {
             _memberlabel = memberLabel;
             _nodeI = NodeI;
@@ -26,8 +26,8 @@ namespace SSH.TrussSolver
         #region Private Fields
 
         private string _memberlabel;
-        private NodesInfo _nodeI;
-        private NodesInfo _nodeJ;
+        private Node _nodeI;
+        private Node _nodeJ;
         private double _A;
         private double _E;
         private double _L;
@@ -41,25 +41,9 @@ namespace SSH.TrussSolver
         private double _IEndForce;
         private double _JEndForce;
 
-        //public TrussElement(double startNodeXcoord, double startNodeYcoord, double endNodeXcoord, double endNodeYcoord, double startNodeID, double endNodeID, double E, double A)
-        //{
-        //    _startNodeXcoord = startNodeXcoord;
-        //    _startNodeYcoord = startNodeYcoord;
-        //    _endNodeXcoord = endNodeXcoord;
-        //    _endNodeYcoord = endNodeYcoord;
-        //    _startNodeID = startNodeID;
-        //    _endNodeID = endNodeID;
-        //    _A = E;
-        //    _E = A;
-        //    EvaluateProperties();
-        //    evaluateTransformationMatrix();
-        //    EvaluateLocalAndGlobalStiffnessMatrix();
-
-        //}
-
         #endregion
 
-        #region Public Fiels
+        #region Public Properties
 
         public Matrix<double> klocal { get => _kl; set => _kl = value; }
         public Matrix<double> Kglobal { get => _kg; set => _kg = value; }
@@ -72,12 +56,11 @@ namespace SSH.TrussSolver
         public double E { get => _E; set => _E = value; }
         public double L { get => _L; set => _L = value; }
         public double Theta { get => 180 / Math.PI * _theta; set => _theta = value; }
-        public NodesInfo NodeI { get => _nodeI; set => _nodeI = value; }
-        public NodesInfo NodeJ { get => _nodeJ; set => _nodeJ = value; }
+        public Node NodeI { get => _nodeI; set => _nodeI = value; }
+        public Node NodeJ { get => _nodeJ; set => _nodeJ = value; }
         public string Memberlabel { get => _memberlabel; set => _memberlabel = value; }
 
         #endregion
-
 
         #region Private Methods
         private void EvaluateProperties()
@@ -110,6 +93,24 @@ namespace SSH.TrussSolver
             _kl[1, 1] = _K;
 
             _kg = (_T.Transpose() * _kl) * _T;
+        }
+
+        #endregion
+
+        #region Public Methods
+
+        void getNodeForce()
+        {
+            //Displacement[0, 0] = TotalDisplacementVector[2 * element.NodeI.ID - 2, 0];
+            //Displacement[1, 0] = TotalDisplacementVector[2 * element.NodeI.ID - 1, 0];
+            //Displacement[2, 0] = TotalDisplacementVector[2 * element.NodeJ.ID - 2, 0];
+            //Displacement[3, 0] = TotalDisplacementVector[2 * element.NodeJ.ID - 1, 0];
+
+            //var displacementLocal = element.T * Displacement;
+            //element.IEndDisplacement = displacementLocal[0, 0];
+            //element.JEndDisplacement = displacementLocal[1, 0];
+            //element.IEndForce = element.E * element.A / element.L * (element.JEndDisplacement - element.IEndDisplacement);
+            //element.JEndForce = element.E * element.A / element.L * (element.IEndDisplacement - element.JEndDisplacement);
         }
 
         #endregion
